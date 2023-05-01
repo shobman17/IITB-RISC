@@ -1,0 +1,216 @@
+m255
+K4
+z2
+!s11e vcom 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/simulation/modelsim
+Ecustom_encoder
+Z1 w1682919740
+Z2 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z3 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
+!i122 1
+R0
+Z4 8C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd
+Z5 FC:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd
+l0
+L24 1
+V_6^=O[]K?RF@R]6l34UKc2
+!s100 f]?bkEg0VdTI0Wj:HUl9E2
+Z6 OV;C;2020.1;71
+31
+Z7 !s110 1682919840
+!i10b 1
+Z8 !s108 1682919839.000000
+Z9 !s90 -reportprogress|300|-93|-work|work|C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd|
+Z10 !s107 C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd|
+!i113 1
+Z11 o-93 -work work
+Z12 tExplicit 1 CvgOpt 0
+Aenc
+R2
+R3
+DEx4 work 14 custom_encoder 0 22 _6^=O[]K?RF@R]6l34UKc2
+!i122 1
+l30
+L29 6
+V^WDLTL2[4HjJJYai61hC<2
+!s100 ^E>P<12m^j3fR]H_Yn`;H2
+R6
+31
+R7
+!i10b 1
+R8
+R9
+R10
+!i113 1
+R11
+R12
+Edut
+Z13 w1682919538
+R2
+R3
+!i122 0
+R0
+Z14 8C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/DUT.vhdl
+Z15 FC:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/DUT.vhdl
+l0
+L7 1
+V<;DXg85=>`J>Uz1QP0GQL3
+!s100 ^=Tj;Fmeb55VSBLT^MNYX0
+R6
+31
+Z16 !s110 1682919839
+!i10b 1
+R8
+Z17 !s90 -reportprogress|300|-93|-work|work|C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/DUT.vhdl|
+Z18 !s107 C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/DUT.vhdl|
+!i113 1
+R11
+R12
+Adutwrap
+R2
+R3
+DEx4 work 3 dut 0 22 <;DXg85=>`J>Uz1QP0GQL3
+!i122 0
+l18
+L12 18
+VcML6Q3cQL2JVY^Y:]A[zL3
+!s100 V]f>UOAX20lD@b1bJkM8O2
+R6
+31
+R16
+!i10b 1
+R8
+R17
+R18
+!i113 1
+R11
+R12
+Ereverse_decoder_3to8
+R1
+R2
+R3
+!i122 1
+R0
+R4
+R5
+l0
+L4 1
+VFRdSKD>]P?Af]EVKfeLW01
+!s100 IW5geY;aC1CLn1LoF@]4W1
+R6
+31
+R7
+!i10b 1
+R8
+R9
+R10
+!i113 1
+R11
+R12
+Adec
+R2
+R3
+DEx4 work 20 reverse_decoder_3to8 0 22 FRdSKD>]P?Af]EVKfeLW01
+!i122 1
+l10
+L9 11
+VzCLOjO`jD];VEP6]V0?ND1
+!s100 7dQ4XcKR>eQzTBN6ma5`_1
+R6
+31
+R7
+!i10b 1
+R8
+R9
+R10
+!i113 1
+R11
+R12
+Esubtractor
+R1
+R2
+R3
+!i122 1
+R0
+R4
+R5
+l0
+L39 1
+VGUMe>fHVYL_bl9WN@1;7=2
+!s100 fh1L7X]W^=]SZ4Jha@J>:0
+R6
+31
+R7
+!i10b 1
+R8
+R9
+R10
+!i113 1
+R11
+R12
+Asub
+R2
+R3
+DEx4 work 10 subtractor 0 22 GUMe>fHVYL_bl9WN@1;7=2
+!i122 1
+l54
+L45 17
+V8E[lfF@@<Bj2f8P]`im[H0
+!s100 fegJ<86Mc9DF0PbnD;_h=2
+R6
+31
+R7
+!i10b 1
+R8
+R9
+R10
+!i113 1
+R11
+R12
+Etestbench
+Z19 w1682919254
+R3
+R2
+!i122 2
+R0
+Z20 8C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/Testbench.vhdl
+Z21 FC:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/Testbench.vhdl
+l0
+L7 1
+V]iKK_Z9L:G9B:i8c]3eFH0
+!s100 bWf8kl8zb90X@P1m>V^K20
+R6
+31
+R7
+!i10b 1
+Z22 !s108 1682919840.000000
+Z23 !s90 -reportprogress|300|-93|-work|work|C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/Testbench.vhdl|
+!s107 C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/Testbench.vhdl|
+!i113 1
+R11
+R12
+Abehave
+R3
+R2
+DEx4 work 9 testbench 0 22 ]iKK_Z9L:G9B:i8c]3eFH0
+!i122 2
+l69
+L9 132
+V>^oVca_G=ePL;lTVcR8=92
+!s100 Uei:7AFEeU[;_9eM2g4UA3
+R6
+31
+R7
+!i10b 1
+R22
+R23
+Z24 !s107 C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/Testbench.vhdl|
+!i113 1
+R11
+R12

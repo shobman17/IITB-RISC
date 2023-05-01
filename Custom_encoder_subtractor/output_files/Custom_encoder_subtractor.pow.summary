@@ -1,0 +1,12 @@
+Power Analyzer Status : Successful - Mon May 01 11:12:48 2023
+Quartus Prime Version : 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+Revision Name : Custom_encoder_subtractor
+Top-level Entity Name : DUT
+Family : MAX 10
+Device : 10M25SAE144I7G
+Power Models : Final
+Total Thermal Power Dissipation : 229.87 mW
+Core Dynamic Thermal Power Dissipation : 0.00 mW
+Core Static Thermal Power Dissipation : 223.00 mW
+I/O Thermal Power Dissipation : 6.87 mW
+Power Estimation Confidence : Low: user provided insufficient toggle rate data
