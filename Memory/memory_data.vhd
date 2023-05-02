@@ -22,7 +22,7 @@ begin
 		if m_rd = '1' then
 				mem_out <= memorykagyaan(to_integer(unsigned(mem_addr)));
 		end if;
-    if rising_edge(clk) then
+    if falling_edge(clk) then
       if m_wr = '1' then
         memorykagyaan(to_integer(unsigned(mem_addr))) <= mem_in;  -- Write
 
