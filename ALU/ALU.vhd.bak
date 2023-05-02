@@ -22,11 +22,11 @@ begin
 	bx <= B xor alu_cmp;
 	aab <= A and bx;
 	axb <= A xor bx;
-	out_s <= C xor axb;
+	out_c <= C xor axb;
 	caaxb <= axb and C;
 	s <= aab or caaxb;
 	anb <= not(aab);
-	out_c <= (alu_oper and anb) or (not(alu_oper) and s);
+	out_s <= (alu_oper and anb) or (not(alu_oper) and s);
 	
 	
 end unit;
