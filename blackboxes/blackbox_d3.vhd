@@ -3,14 +3,14 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library Work;
-entity bbD3 is
+entity bb_cwr_zwr is
 	port (
 			ex2ma_c, ex2ma_z:in std_logic;
 		   opcode : in std_logic_vector(5 downto 0);
 			c_wr, z_wr : out std_logic);
-end entity bbD3;
+end entity bb_cwr_zwr;
 
-architecture blackboxed3 of bbD3 is
+architecture blackboxed3 of bb_cwr_zwr is
 	begin
 		edit_process: process(ex2ma_c, ex2ma_z, opcode)
 		begin
