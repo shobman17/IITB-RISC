@@ -1,0 +1,37 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+library Work;
+entity IF2IDreg is
+	port (
+			clk,IF2ID_WR: in std_logic;
+			IMdata, pc,pc2: in std_logic_vector(15 downto 0);
+			IMdatao, pco,pc2o: out std_logic_vector(15 downto 0));
+end entity IF2IDreg;
+
+architecture bhv1 of IF2IDreg is
+	signal IMdatas, pcs,pc2s: std_logic_vector(15 downto 0);
+	--signal storage: std_logic_vector(1 downto 0):="00";
+	begin
+		IMdata <= IMdatas;
+		pc<= pcs;
+		pc2 <= pc2s;
+		
+		--output(1 downto 0)<= storage(1 downto 0);
+		edit_process: process(clk)
+		begin
+			if(falling_edge(clk)) then
+				--storage(1 downto 0)<=input(1 downto 0);
+				IMdatas <= (IMdata and IF2ID_WR) or ((not(IF2ID_WR)) and IMdatas);
+				pcs <= (pc and IF2ID_WR) or ((not(IF2ID_WR)) and pcs);
+				pc2s <= (pc2 and IF2ID_WR) or ((not(IF2ID_WR)) and pc2s);
+				
+			else 
+			IMdatas <= IMdata;
+			pcs<=pcs;
+			pc2s<=pc2s;
+				
+			end if;
+			
+		end process;
+end architecture bhv1;
