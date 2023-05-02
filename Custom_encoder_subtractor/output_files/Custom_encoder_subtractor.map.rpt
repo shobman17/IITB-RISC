@@ -1,5 +1,5 @@
-Analysis & Synthesis report for Custom_encoder_subtractor
-Mon May 01 11:12:37 2023
+Analysis & Elaboration report for Custom_encoder_subtractor
+Wed May 03 00:23:32 2023
 Quartus Prime Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
 
 
@@ -7,16 +7,10 @@ Quartus Prime Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
 ; Table of Contents ;
 ---------------------
   1. Legal Notice
-  2. Analysis & Synthesis Summary
-  3. Analysis & Synthesis Settings
-  4. Parallel Compilation
-  5. Analysis & Synthesis Source Files Read
-  6. Analysis & Synthesis Resource Usage Summary
-  7. Analysis & Synthesis Resource Utilization by Entity
-  8. General Register Statistics
-  9. Post-Synthesis Netlist Statistics for Top Partition
- 10. Elapsed Time Per Partition
- 11. Analysis & Synthesis Messages
+  2. Analysis & Elaboration Summary
+  3. Parallel Compilation
+  4. Analysis & Elaboration Settings
+  5. Analysis & Elaboration Messages
 
 
 
@@ -41,29 +35,45 @@ https://fpgasoftware.intel.com/eula.
 
 
 +----------------------------------------------------------------------------------+
-; Analysis & Synthesis Summary                                                     ;
+; Analysis & Elaboration Summary                                                   ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Mon May 01 11:12:37 2023       ;
+; Analysis & Elaboration Status      ; Successful - Wed May 03 00:23:32 2023       ;
 ; Quartus Prime Version              ; 20.1.1 Build 720 11/11/2020 SJ Lite Edition ;
 ; Revision Name                      ; Custom_encoder_subtractor                   ;
 ; Top-level Entity Name              ; DUT                                         ;
 ; Family                             ; MAX 10                                      ;
-; Total logic elements               ; 8                                           ;
-;     Total combinational functions  ; 8                                           ;
-;     Dedicated logic registers      ; 0                                           ;
-; Total registers                    ; 0                                           ;
-; Total pins                         ; 19                                          ;
-; Total virtual pins                 ; 0                                           ;
-; Total memory bits                  ; 0                                           ;
-; Embedded Multiplier 9-bit elements ; 0                                           ;
-; Total PLLs                         ; 0                                           ;
-; UFM blocks                         ; 0                                           ;
-; ADC blocks                         ; 0                                           ;
+; Total logic elements               ; N/A until Partition Merge                   ;
+;     Total combinational functions  ; N/A until Partition Merge                   ;
+;     Dedicated logic registers      ; N/A until Partition Merge                   ;
+; Total registers                    ; N/A until Partition Merge                   ;
+; Total pins                         ; N/A until Partition Merge                   ;
+; Total virtual pins                 ; N/A until Partition Merge                   ;
+; Total memory bits                  ; N/A until Partition Merge                   ;
+; Embedded Multiplier 9-bit elements ; N/A until Partition Merge                   ;
+; Total PLLs                         ; N/A until Partition Merge                   ;
+; UFM blocks                         ; N/A until Partition Merge                   ;
+; ADC blocks                         ; N/A until Partition Merge                   ;
 +------------------------------------+---------------------------------------------+
 
 
++------------------------------------------+
+; Parallel Compilation                     ;
++----------------------------+-------------+
+; Processors                 ; Number      ;
++----------------------------+-------------+
+; Number detected on machine ; 8           ;
+; Maximum allowed            ; 4           ;
+;                            ;             ;
+; Average used               ; 1.00        ;
+; Maximum used               ; 1           ;
+;                            ;             ;
+; Usage by Processor         ; % Time Used ;
+;     Processor 1            ; 100.0%      ;
++----------------------------+-------------+
+
+
 +-------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Settings                                                                                     ;
+; Analysis & Elaboration Settings                                                                                   ;
 +------------------------------------------------------------------+--------------------+---------------------------+
 ; Option                                                           ; Setting            ; Default Value             ;
 +------------------------------------------------------------------+--------------------+---------------------------+
@@ -148,123 +158,14 @@ https://fpgasoftware.intel.com/eula.
 +------------------------------------------------------------------+--------------------+---------------------------+
 
 
-+------------------------------------------+
-; Parallel Compilation                     ;
-+----------------------------+-------------+
-; Processors                 ; Number      ;
-+----------------------------+-------------+
-; Number detected on machine ; 8           ;
-; Maximum allowed            ; 4           ;
-;                            ;             ;
-; Average used               ; 1.00        ;
-; Maximum used               ; 1           ;
-;                            ;             ;
-; Usage by Processor         ; % Time Used ;
-;     Processor 1            ; 100.0%      ;
-+----------------------------+-------------+
-
-
-+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Source Files Read                                                                                                                                             ;
-+----------------------------------+-----------------+-----------------+---------------------------------------------------------------------------------------------------+---------+
-; File Name with User-Entered Path ; Used in Netlist ; File Type       ; File Name with Absolute Path                                                                      ; Library ;
-+----------------------------------+-----------------+-----------------+---------------------------------------------------------------------------------------------------+---------+
-; DUT.vhdl                         ; yes             ; User VHDL File  ; C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/DUT.vhdl                      ;         ;
-; custom_encoder_subtractor.vhd    ; yes             ; User VHDL File  ; C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd ;         ;
-+----------------------------------+-----------------+-----------------+---------------------------------------------------------------------------------------------------+---------+
-
-
-+----------------------------------------------------------------------+
-; Analysis & Synthesis Resource Usage Summary                          ;
-+---------------------------------------------+------------------------+
-; Resource                                    ; Usage                  ;
-+---------------------------------------------+------------------------+
-; Estimated Total logic elements              ; 8                      ;
-;                                             ;                        ;
-; Total combinational functions               ; 8                      ;
-; Logic element usage by number of LUT inputs ;                        ;
-;     -- 4 input functions                    ; 8                      ;
-;     -- 3 input functions                    ; 0                      ;
-;     -- <=2 input functions                  ; 0                      ;
-;                                             ;                        ;
-; Logic elements by mode                      ;                        ;
-;     -- normal mode                          ; 8                      ;
-;     -- arithmetic mode                      ; 0                      ;
-;                                             ;                        ;
-; Total registers                             ; 0                      ;
-;     -- Dedicated logic registers            ; 0                      ;
-;     -- I/O registers                        ; 0                      ;
-;                                             ;                        ;
-; I/O pins                                    ; 19                     ;
-;                                             ;                        ;
-; Embedded Multiplier 9-bit elements          ; 0                      ;
-;                                             ;                        ;
-; Maximum fan-out node                        ; input_vector[10]~input ;
-; Maximum fan-out                             ; 8                      ;
-; Total fan-out                               ; 59                     ;
-; Average fan-out                             ; 1.28                   ;
-+---------------------------------------------+------------------------+
-
-
-+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                                                           ;
-+------------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+------------------------------+-------------+--------------+
-; Compilation Hierarchy Node   ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; UFM Blocks ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; ADC blocks ; Full Hierarchy Name          ; Entity Name ; Library Name ;
-+------------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+------------------------------+-------------+--------------+
-; |DUT                         ; 8 (0)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 19   ; 0            ; 0          ; |DUT                         ; DUT         ; work         ;
-;    |subtractor:add_instance| ; 8 (8)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |DUT|subtractor:add_instance ; subtractor  ; work         ;
-+------------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+------------------------------+-------------+--------------+
-Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
-
-
-+------------------------------------------------------+
-; General Register Statistics                          ;
-+----------------------------------------------+-------+
-; Statistic                                    ; Value ;
-+----------------------------------------------+-------+
-; Total registers                              ; 0     ;
-; Number of registers using Synchronous Clear  ; 0     ;
-; Number of registers using Synchronous Load   ; 0     ;
-; Number of registers using Asynchronous Clear ; 0     ;
-; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 0     ;
-; Number of registers using Preset             ; 0     ;
-+----------------------------------------------+-------+
-
-
-+-----------------------------------------------------+
-; Post-Synthesis Netlist Statistics for Top Partition ;
-+-----------------------+-----------------------------+
-; Type                  ; Count                       ;
-+-----------------------+-----------------------------+
-; boundary_port         ; 19                          ;
-; cycloneiii_lcell_comb ; 9                           ;
-;     normal            ; 9                           ;
-;         1 data inputs ; 1                           ;
-;         4 data inputs ; 8                           ;
-;                       ;                             ;
-; Max LUT depth         ; 2.00                        ;
-; Average LUT depth     ; 1.30                        ;
-+-----------------------+-----------------------------+
-
-
-+-------------------------------+
-; Elapsed Time Per Partition    ;
-+----------------+--------------+
-; Partition Name ; Elapsed Time ;
-+----------------+--------------+
-; Top            ; 00:00:00     ;
-+----------------+--------------+
-
-
-+-------------------------------+
-; Analysis & Synthesis Messages ;
-+-------------------------------+
++---------------------------------+
+; Analysis & Elaboration Messages ;
++---------------------------------+
 Info: *******************************************************************
-Info: Running Quartus Prime Analysis & Synthesis
+Info: Running Quartus Prime Analysis & Elaboration
     Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
-    Info: Processing started: Mon May 01 11:12:24 2023
-Info: Command: quartus_map --read_settings_files=on --write_settings_files=off Custom_encoder_subtractor -c Custom_encoder_subtractor
+    Info: Processing started: Wed May 03 00:23:15 2023
+Info: Command: quartus_map --read_settings_files=on --write_settings_files=off Custom_encoder_subtractor -c Custom_encoder_subtractor --analysis_and_elaboration
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
 Info (12021): Found 2 design units, including 1 entities, in source file testbench.vhdl
@@ -275,25 +176,18 @@ Info (12021): Found 2 design units, including 1 entities, in source file dut.vhd
     Info (12023): Found entity 1: DUT File: C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/DUT.vhdl Line: 7
 Info (12021): Found 6 design units, including 3 entities, in source file custom_encoder_subtractor.vhd
     Info (12022): Found design unit 1: reverse_decoder_3to8-dec File: C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd Line: 9
-    Info (12022): Found design unit 2: custom_encoder-enc File: C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd Line: 29
-    Info (12022): Found design unit 3: subtractor-sub File: C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd Line: 45
+    Info (12022): Found design unit 2: custom_encoder-enc File: C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd Line: 30
+    Info (12022): Found design unit 3: subtractor-sub File: C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd Line: 47
     Info (12023): Found entity 1: reverse_decoder_3to8 File: C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd Line: 4
     Info (12023): Found entity 2: custom_encoder File: C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd Line: 24
-    Info (12023): Found entity 3: subtractor File: C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd Line: 39
+    Info (12023): Found entity 3: subtractor File: C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd Line: 41
 Info (12127): Elaborating entity "DUT" for the top level hierarchy
 Info (12128): Elaborating entity "subtractor" for hierarchy "subtractor:add_instance" File: C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/DUT.vhdl Line: 22
-Info (12128): Elaborating entity "reverse_decoder_3to8" for hierarchy "subtractor:add_instance|reverse_decoder_3to8:dec" File: C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd Line: 56
-Info (286030): Timing-Driven Synthesis is running
-Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
-    Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
-Info (21057): Implemented 27 device resources after synthesis - the final resource count might be different
-    Info (21058): Implemented 11 input pins
-    Info (21059): Implemented 8 output pins
-    Info (21061): Implemented 8 logic cells
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 1 warning
-    Info: Peak virtual memory: 4785 megabytes
-    Info: Processing ended: Mon May 01 11:12:37 2023
-    Info: Elapsed time: 00:00:13
-    Info: Total CPU time (on all processors): 00:00:16
+Info (12128): Elaborating entity "reverse_decoder_3to8" for hierarchy "subtractor:add_instance|reverse_decoder_3to8:dec" File: C:/Users/shobh/OneDrive/Desktop/IITB-RISC/Custom_encoder_subtractor/custom_encoder_subtractor.vhd Line: 58
+Info: Quartus Prime Analysis & Elaboration was successful. 0 errors, 1 warning
+    Info: Peak virtual memory: 4776 megabytes
+    Info: Processing ended: Wed May 03 00:23:32 2023
+    Info: Elapsed time: 00:00:17
+    Info: Total CPU time (on all processors): 00:00:18
 
 
