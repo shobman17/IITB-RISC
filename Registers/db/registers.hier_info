@@ -1,0 +1,6 @@
+|alpha
+input => alpha_content.DATAIN
+clk => alpha_content.CLK
+output <= alpha_content.DB_MAX_OUTPUT_PORT_TYPE
+
+

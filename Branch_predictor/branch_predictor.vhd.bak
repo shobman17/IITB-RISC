@@ -1,0 +1,27 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity branch_predictor is 
+	generic (
+		addrSize    : integer   := 16;
+		tableSize   : integer   := 64);
+	port(
+		in_IF, in_EXE, in_pred: in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
+		BR_WR: in std_logic; -- if BR_WR is true then we update the LUT else we just read
+		out_pred: in std_logic_vector(15 downto 0);
+		branch: in std_logic); -- wehether to branch ot not
+end branch_predictor;
+
+architecture predict of branch_predictor is
+	
+	signal inputTable: std_logic_vector(addrSize*tableSize-1 downto 0) := (others =>'0');
+	signal historyBit: std_logic_vector(tableSize - 1 downto 0) := (others => '0');
+	signal predTable : std_logic_vector(addrSize*tableSize-1 downto 0) := (others =>'0');
+	variable head    : integer := 0; -- where to write a new entry	
+	
+begin
+	readTable: process(in_IF) is
+	begin
+		searchTable: for IR in 0 to tableSize - 1 loop
+			if (inputTable(addrSize*IR to addrSize*(IR+1) - 1) = in_IF and historyBit) then
+				
