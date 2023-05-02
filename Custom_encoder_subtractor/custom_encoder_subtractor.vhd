@@ -23,7 +23,8 @@ use ieee.std_logic_1164.all;
 
 entity custom_encoder is
 	port (input: in std_logic_vector(7 downto 0);
-			output: out std_logic_vector(2 downto 0));
+			output: out std_logic_vector(2 downto 0);
+			done: out std_logic); -- nor of all input bits. Useful to know end of LM/SM instruction
 end entity custom_encoder;
 
 architecture enc of custom_encoder is 
@@ -31,6 +32,7 @@ begin
 	output(2) <= input(0) or input(1) or input(2) or input(3);
 	output(1) <= input(0) or input(1) or (not(input(2) or input(3)) and (input(4) or input(5)));
 	output(0) <= input(0) or (not(input(1)) and input(2)) or (not(input(1) or input(3)) and input(4)) or (not(input(1) or input(3) or input(5)) and input(6));
+	done <= not(input(0) or input(1) or input(2) or input(3) or input(4) or input(5) or input(6) or input(7));
 end enc;
 
 library ieee;
