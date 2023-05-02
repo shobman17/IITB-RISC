@@ -1,28 +1,28 @@
 library ieee;
 use ieee.std_logic_1164.all;
-library work;
-use work.Gates.all;
---use work;
 
 -------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------
 
 entity mux_4_1  is
-  port (I0 ,I1, I2,I3, S0, S1: in std_logic; mux_out: out std_logic);
+  port (I0 ,I1, I2,I3: in std_logic_vector(15 downto 0);
+        S0,S1 : in std_logic;
+		  mux_out: out std_logic_vector(15 downto 0));
 end entity mux_4_1;
 
-architecture Structer of mux_4_1 is
-  signal Ti1,Ti2,Ti3 : std_logic;
-
-component mux_2_1 is
-	port (D0, D1, mux_select: in std_logic; output: out std_logic);
-end component mux_2_1;
-  
+architecture Structer4 of mux_4_1 is
 begin
-  -- component instances
-  mu1: mux_2_1 port map (D0 => I0, D1 => I1, mux_select => S0, output => Ti1);
-  mu2: mux_2_1 port map (D0 => I2, D1 => I3, mux_select => S0, output => Ti2);
-  mu3: mux_2_1 port map (D0 => Ti1, D1 => Ti2, mux_select => S1, output => mux_out);
-  
-  
-end Structer;
+   selectproc4: process(S0,S1) is 
+	begin 
+	if (S0 = '0' and S1 = '0') then 
+		mux_out <= I0;
+	elsif (S0 = '1' and S1 = '0') then 
+		mux_out <= I1;
+	elsif (S0 = '0' and S1 = '1') then 
+		mux_out <= I2;
+	elsif (S0 = '1' and S1 = '1') then 
+		mux_out <= I3;
+
+   end if;
+	end process selectproc4;
+end Structer4;

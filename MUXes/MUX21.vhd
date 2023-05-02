@@ -1,19 +1,25 @@
-library ieee;
+ library ieee;
 use ieee.std_logic_1164.all;
-library work;
-use work.Gates.all;
+
+-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------
 
 entity mux_2_1  is
-  port (D0, D1, mux_select: in std_logic; output: out std_logic);
+  port (I0 ,I1: in std_logic_vector(15 downto 0);
+        S0: in std_logic;
+		  mux_out: out std_logic_vector(15 downto 0));
 end entity mux_2_1;
 
-architecture Struct of mux_2_1 is
-  signal T1,T2,T3 : std_logic;
+architecture Structer of mux_4_1 is
 begin
-  -- component instances
-  INVERTER1 : INVERTER port map (A => mux_select, Y => T1);
-  AND1: AND_2 port map (A => D0, B => T1, Y => T2);
-  AND2: AND_2 port map (A => D1, B => mux_select, Y => T3);
-  OR1: OR_2 port map (A => T2, B => T3, Y => output);
-  
-end Struct;
+   selectproc: process(S0,S1) is 
+	begin 
+	if (S0 = '0' ) then 
+		mux_out <= I0;
+	elsif (S0 = '1') then 
+		mux_out <= I1;
+
+
+   end if;
+	end process selectproc;
+end Structer;
