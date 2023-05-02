@@ -9,60 +9,92 @@ entity DataPath is
 end entity Datapath;
 
 architecture trivial of DataPath is
-	for all: T1_reg
-		use entity work.T1_reg(bhv);
-
 	
-	signal alu_a, alu_b, alu_out, s1_0, s1_10, s2_0, s2_1, s3_0, s3_1, s4_0, s4_1, s5_0, s5_1, d1, d2, d3, e8_out, se6_out, L7_out, m_a, m_in, m_out: std_logic_vector(15 downto 0):=(others=>'0');
-	signal a1, a2, a3, s6_0, s6_1, s1_7, s1_6, s1_5, enc_out: std_logic_vector(2 downto 0):=(others=>'0');
-	signal alu_ctrl: std_logic_vector(1 downto 0);
-	signal s1_1: std_logic_vector(8 downto 0);
-	signal s1_2: std_logic_vector(5 downto 0);
-	signal s1_3, dec_out: std_logic_vector(7 downto 0);
-	signal s1_4:std_logic_vector(3 downto 0):=(others=>'0');
-	signal t1_wr, t2_wr, t3_wr, t4_wr, t5_wr, t6_wr, m_rd, m_wr, r_wr, c_en, z_en, c_in, c_out, z_in, z_out, s1_8, s1_9: std_logic;
+	for all: mux_2_1
+		use entity work.mux_2_1(bbD1);
+	
+	for all: CZreg
+		use entity work.CZreg(bhv);
+	
+	for all: PC
+		use entity work.PC(update);
+	
+	for all: alpha
+		use entity work.alpha(update);
 		
-	--Represents id for each state we we using
-	constant state1  : std_logic_vector(3 downto 0):= "0001";  
-	constant state2  : std_logic_vector(3 downto 0):= "0010";
-	constant state3  : std_logic_vector(3 downto 0):= "0011";
-	constant state4  : std_logic_vector(3 downto 0):= "0100";
-	constant state5  : std_logic_vector(3 downto 0):= "0101";
-	constant state6  : std_logic_vector(3 downto 0):= "0110";
-	constant state7  : std_logic_vector(3 downto 0):= "0111";
-	constant state8  : std_logic_vector(3 downto 0):= "1000";
-	constant state9  : std_logic_vector(3 downto 0):= "1001";  
-	constant state10 : std_logic_vector(3 downto 0):= "1010";
-	constant state11 : std_logic_vector(3 downto 0):= "1011";
-	constant state12 : std_logic_vector(3 downto 0):= "1100";
-	constant state13 : std_logic_vector(3 downto 0):= "1101";
-	constant state14 : std_logic_vector(3 downto 0):= "1110";
-	constant state15 : std_logic_vector(3 downto 0):= "1111";
-	constant state_reset : std_logic_vector(3 downto 0):= "0000";
+	for all: mux51
+		use entity work.mux51(Structer5);
+		
+	for all: mux_4_1
+		use entity work.mux_4_1(Structer4);
+		
+	for all: Memory_Data
+		use entity work.Memory_Data(memorykakaam);
+		
+	for all: Memory_Code
+		use entity work.Memory_Code(memorykakaam);
+	
+	for all: bbD1
+		use entity work.bbD1(blackboxed);
+		
+	for all: bbD2
+		use entity work.bbD2(blackboxed2);
+		
+	for all: bb_cwr_zwr
+		use entity work.bb_cwr_zwr(blackboxed3);
+		
+	for all: Lshifter6
+		use entity work.Leftshifter(yes);
+	
+	for all: Leftshifter9
+		use entity work.Leftshifter9(yes);
+		
+	for all: extender_nine
+		use entity work.extender_nine(major_extending);
+		
+	for all: subtractor
+		use entity work.subtractor(sub);
+		
+	for all: custom_encoder
+		use entity work.custom_encoder(enc);
+		
+	for all: ADDER
+		use entity work.ADDER(add);
+		
+	for all: ALU
+		use entity work.ALU(addnand);
+		
+	for all: IF2IDreg
+		use entity work.IF2IDreg(bhv1);
+	
+	for all: reverse_decoder_3to8
+		use entity work.reverse_decoder_3to8(dec);
+	
+	signal IF_IM_in, update_PC, IF_IM_out, ID_IM_in, EX_D1_MUX_out, EX_adder2_out, IF_adder1_out, ID_adder1_out, OR_adder1_out, MA_adder1_out, WB_adder1_out, : std_logic_vector(15 downto 0):=(others=>'0');
+	signal clk, PC_WR: std_logic;
+--	signal alu_a, alu_b, alu_out, s1_0, s1_10, s2_0, s2_1, s3_0, s3_1, s4_0, s4_1, s5_0, s5_1, d1, d2, d3, e8_out, se6_out, L7_out, m_a, m_in, m_out: std_logic_vector(15 downto 0):=(others=>'0');
+--	signal a1, a2, a3, s6_0, s6_1, s1_7, s1_6, s1_5, enc_out: std_logic_vector(2 downto 0):=(others=>'0');
+--	signal alu_ctrl: std_logic_vector(1 downto 0);
+--	signal s1_1: std_logic_vector(8 downto 0);
+--	signal s1_2: std_logic_vector(5 downto 0);
+--	signal s1_3, dec_out: std_logic_vector(7 downto 0);
+--	signal s1_4:std_logic_vector(3 downto 0):=(others=>'0');
+--	signal t1_wr, t2_wr, t3_wr, t4_wr, t5_wr, t6_wr, m_rd, m_wr, r_wr, c_en, z_en, c_in, c_out, z_in, z_out, s1_8, s1_9: std_logic;
 	
 	begin
 		--How many t_regs do we need? 5. The first one is a bit special though
-		T1: component t1_reg
-			port map(s1_0, t1_wr, clk, s1_1, s1_2, s1_3, s1_4, s1_5, s1_6, s1_7, s1_8, s1_9, s1_10);
-			
-		T2: component t_reg
-			port map(s2_0, t2_wr, clk, s2_1);
-			
-		T3: component t_reg
-			port map(s3_0, t3_wr, clk, s3_1);
-			
-		T4: component t_reg
-			port map(s4_0, t4_wr, clk, s4_1);
-			
-		T5: component t_reg
-			port map(s5_0, t5_wr, clk, s5_1);
+		PCyes: component PC
+			port map(update_PC, clk, PC_WR, IM_in_s);
 		
-		-- now the final 2 registers
-		T6: component temp_reg3
-			port map(s6_0, t6_wr, clk, s6_1);
+		InstructionMemory: component Memory_Code
+			port map(clk, IF_IM_in, IF_IM_out);
+			
+		PC_MUX: component mux_4_1
+			port map(IF_adder1_out, EX_adder2_out, EX_D1_MUX_out, Prediction, update_PC);
+			
+		BranchPredictor: component 
 		
-		flag: component flag_reg
-			port map(c_in, z_in, c_en, z_en, clk, c_out, z_out);
+		
 			
 		--Now we will try and connect the shift register to everything
 		

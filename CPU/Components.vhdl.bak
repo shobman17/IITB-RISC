@@ -115,7 +115,7 @@ entity Lshifter6 is
 			outp : out std_logic_vector (15 downto 0));
 end entity LShifter6;
 
-architecture yes of Lshifter6 is
+architecture  of Lshifter6 is
 	begin multiply_by_two
 		outp(15 downto 7) <= "000000000";
 		outp(6 downto 1) <= inp;
@@ -139,7 +139,7 @@ entity Lshifter9 is
 			outp : out std_logic_vector (15 downto 0));
 end entity LShifter9;
 
-architecture yes of Lshifter9 is
+architecture  of Lshifter9 is
 	begin multiply_by_two
 		outp(15 downto 10) <= "000000";
 		outp(9 downto 1) <= inp;
@@ -239,14 +239,14 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library Work;
-entity bb_cwr_zwr is
+entity bbD3 is
 	port (
 			ex2ma_c, ex2ma_z:in std_logic;
 		   opcode : in std_logic_vector(5 downto 0);
 			c_wr, z_wr : out std_logic);
 end entity bbD3;
 
-architecture blackboxed3 of bb_cwr_zwr is
+architecture blackboxed3 of bbD3 is
 	begin
 		edit_process: process(ex2ma_c, ex2ma_z, opcode)
 		begin
@@ -455,36 +455,6 @@ begin
 	
 	output <= alpha_content;
 end update;
-
---------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------NEW COMPONENT-----------------------------------------
---------------------------------------------------------------DON'T BLINK-------------------------------------------
---------------------------------------------------------------LEST YOU MISS-----------------------------------------
---------------------------------------------------------------------------------------------------------------------
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
-library Work;
-entity PC is
-	port (
-			input,clk, PC_WR: in std_logic;
-			output: out std_logic);
-end entity alpha;
-
-architecture update of PC is 
-	signal alpha_content: std_logic := '0';
-begin
-	write_alpha: process(clk) is
-	begin
-		if(falling_edge(clk) and PC_WR = 1) then
-			alpha_content <= input;
-		end if;
-	end process write_alpha;
-	
-	output <= alpha_content;
-end update;
 			
 --------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------NEW COMPONENT-----------------------------------------
@@ -542,7 +512,7 @@ entity mux_2_1  is
 		  mux_out: out std_logic_vector(15 downto 0));
 end entity mux_2_1;
 
-architecture Structer of mux_2_1 is
+architecture Structer of mux_4_1 is
 begin
    selectproc: process(S0,S1) is 
 	begin 
@@ -635,7 +605,7 @@ use ieee.numeric_std.all;
 
 entity Memory_Code is 
 		port(
-				clk: in std_logic; 
+				clk, m_wr: in std_logic; 
 				mem_addr: in std_logic_vector(15 downto 0);
 				mem_out: out std_logic_vector(15 downto 0)
 			 ); 
@@ -695,45 +665,3 @@ end  architecture;
 --------------------------------------------------------------DON'T BLINK-------------------------------------------
 --------------------------------------------------------------LEST YOU MISS-----------------------------------------
 --------------------------------------------------------------------------------------------------------------------
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-library Work;
-entity IF2IDreg is
-	port (
-			clk, IF2ID_WR: in std_logic;
-			IMdata, pc, pc2: in std_logic_vector(15 downto 0);
-			IMdatao, pco, pc2o: out std_logic_vector(15 downto 0));
-end entity IF2IDreg;
-
-architecture bhv1 of IF2IDreg is
-	signal IMdatas, pcs,pc2s: std_logic_vector(15 downto 0) := "0000000000000000";
-	--signal storage: std_logic_vector(1 downto 0):="00";
-	begin
-		IMdatao <= IMdatas;
-		pco <= pcs;
-		pc2o <= pc2s;
-		
-		--output(1 downto 0)<= storage(1 downto 0);
-		edit_process: process(clk)
-		begin
-			if(falling_edge(clk)) then
-				if (IF2ID_WR = '1')then
-				IMdatas <= IMdata;
-				pcs <= pc;
-				pc2s <= pc2; 
-				
-				else 
-				IMdatas <= IMdatas;
-				pcs<=pcs;
-				pc2s<=pc2s;
-				end if;
-				
-				else 
-				IMdatas <= IMdatas;
-				pcs<=pcs;
-				pc2s<=pc2s;
-			end if;
-			
-		end process;
-end architecture bhv1;
