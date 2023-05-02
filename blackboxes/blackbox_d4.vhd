@@ -3,14 +3,14 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library Work;
-entity bb_pc_mux is
+entity bb_branching is
 	port (
 			c_o, z_o:in std_logic;
 		   opcode : in std_logic_vector(5 downto 0);
 			 pc_mux_branch,if2id_wr_and_a, id2or_reset_all_wr, or2ex_reset_all_wr  : out std_logic);
-end entity bb_pc_mux;
+end entity bb_branching;
 
-architecture blackboxed4 of bb_pc_mux is
+architecture blackboxed4 of bb_branching is
 	begin
 		edit_process: process(c_o, z_o, opcode)
 		begin
