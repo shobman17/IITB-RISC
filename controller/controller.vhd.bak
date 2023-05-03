@@ -1,0 +1,96 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity controller is
+	port (instruction: in std_logic_vector(15 downto 0);
+            alpha : in std_logic;
+		    opcode : out std_logic_vector(5 downto 0);
+            instr_11_9 : out std_logic_vector(2 downto 0);
+            instr_8_6 : out std_logic_vector(2 downto 0);
+            instr_5_3 : out std_logic_vector(2 downto 0);
+            instr_2_0 : out std_logic_vector(2 downto 0);
+            instr_7_0 : out std_logic_vector(7 downto 0);
+            instr_5_0 : out std_logic_vector(5 downto 0);
+            instr_8_0 : out std_logic_vector(8 downto 0);
+            alpha_decode : out std_logic;
+            ID_st : out std_logic; -- ID2OR_WR
+            OR_st : out std_logic_vector(2 downto 0); -- OR2EX_WR, MUX_RF_A1, MUX_RF_A2
+            EX_st : out std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
+            MA_st : out std_logic_vector(3 downto 0); -- MA_WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
+            WB_st : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+         )
+end entity controller;
+
+architecture dictator of controller is
+
+    signal ID2OR_WR: std_logic;
+    signal OR2EX_WR, MUX_RF_A1, MUX_RF_A2: std_logic;
+    signal EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1: std_logic;
+    signal MA_WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT std_logic;
+    signal WB_MUX_1, WB_MUX_0 std_logic;
+begin
+
+    opcode <= instruction(15 downto 12) & instruction(1 downto 0);
+    instr_11_9 <= instruction(11 downto 9);
+    instr_8_6 <= instruction(8 downto 6);
+    instr_5_3 <= instruction(5 downto 3);
+    instr_2_0 <= instruction(2 downto 0);
+    instr_7_0 <= instruction(7 downto 0);
+    instr_5_0 <= instruction(5 downto 0);
+    instr_8_0 <= instruction(8 downto 0);
+    alpha_decode <= not instruction(15) and instruction(14) and instruction(13);
+    ID2OR_WR <= '1';
+    OR2EX_WR <= '1';
+    EX2MA_WR <= '1';
+    MA2WB_WR <= '1';
+    
+    -- All signals with Instruction Decode(ID) Stage 
+    ID_st <= ID2OR_WR;
+
+    -- All signals with Operand Read(OR) Stage 
+    MUX_RF_A1 <= (not instruction(15)) and instruction(14) and instruction(13) and instruction(12);
+    MUX_RF_A2 <= instruction(15) or instruction(14);
+    OR_st <= OR2EX_WR & MUX_RF_A1 & MUX_RF_A2;
+
+    -- All signals with Execute(EX) Stage 
+    MUX_ALU_A_0 <= (not instruction(15)) and instruction(14) and instruction(13) and alpha;
+    MUX_ALU_A_1 <= (not instruction(15)) and instruction(14) and instruction(13);
+    MUX_ALU_B <= ((not instruction(15)) and instruction(14) and (not instruction(13))) 
+                    or (not (instruction(15) or instruction(14) or instruction(13) or instruction(12)));
+    with instruction(15 downto 12) select
+        ALU_CARRY_1 <= '1' if "0001",
+                    <= '1' if "1000",
+                    <= '1' if "1001",
+                    <= '1' if "1011",
+                    <= '0' if others;
+    with instruction(15 downto 12) select
+        ALU_CARRY_0 <= '1' if "1000",
+                    <= '1' if "1001",
+                    <= '1' if "1011",
+                    <= '0' if others;                
+    with instruction(15 downto 12) select
+        ALU_OPER <= '1' if "0010",
+                    <= '0' if others;
+    with instruction(15 downto 12) select
+        ALU_COMPLEMENT <= instruction(2 downto 2) if "0001",
+                        <= instruction(2 downto 2) if "0010",
+                        <= '1' if "1000",
+                        <= '1' if "1001",
+                        <= '1' if "1011",
+                        <= '0' if others;
+    MUX_ADDER_A <= not(instruction(15) and instruction(14) and instruction(13) and instruction(12));
+    MUX_ADDER_B_0 <= '1';
+    MUX_ADDER_B_1 <= not(instruction(15) and instruction(14) and instruction(13) and instruction(12));
+    EX_st <= EX2MA_WR & MUX_ALU_A_0 & MUX_ALU_A_1 & MUX_ALU_B & ALU_CARRY_1 & ALU_CARRY_0 & ALU_OPER & ALU_COMPLEMENT & MUX_ADDER_A & MUX_ADDER_B_0 & MUX_ADDER_B_1;
+    
+    -- All signals with Memory Access(MA) Stage 
+    DATA_MEM_WR <= (not instruction(15)) and instruction(14) and instruction(12);
+    DATA_MEM_RD <= (not instruction(15)) and instruction(14) and (not instruction(12));
+    MUX_MEM_OUT <= (not instruction(15)) and instruction(14) and (not instruction(12));
+
+    -- All signals with Write Back(WB) Stage 
+    WB_MUX_1 <= (instruction(15) and instruction(14)) 
+            or ((not instruction(15)) and (not instruction(14)) and instruction(13) and instruction(12));
+    WB_MUX_0 <= (not instruction(15)) and (not instruction(14)) and instruction(13) and instruction(12);
+
+end dictator;
