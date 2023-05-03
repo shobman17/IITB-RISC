@@ -239,14 +239,14 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library Work;
-entity bb_cwr_zwr is
+entity bbD3 is
 	port (
 			ex2ma_c, ex2ma_z:in std_logic;
 		   opcode : in std_logic_vector(5 downto 0);
 			c_wr, z_wr : out std_logic);
-end entity bb_cwr_zwr;
+end entity bbD3;
 
-architecture blackboxed3 of bb_cwr_zwr is
+architecture blackboxed3 of bbD3 is
 	begin
 		edit_process: process(ex2ma_c, ex2ma_z, opcode)
 		begin
@@ -281,86 +281,6 @@ end architecture blackboxed3;
 --------------------------------------------------------------DON'T BLINK-------------------------------------------
 --------------------------------------------------------------LEST YOU MISS-----------------------------------------
 --------------------------------------------------------------------------------------------------------------------
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
-library Work;
-entity bb_branching is
-	port (
-			c_o, z_o:in std_logic;
-		   opcode : in std_logic_vector(5 downto 0);
-			 pc_mux_branch,if2id_wr_and_a, id2or_reset_all_wr, or2ex_reset_all_wr  : out std_logic);
-end entity bb_branching;
-
-architecture blackboxed4 of bb_branching is
-	begin
-		edit_process: process(c_o, z_o, opcode)
-		begin
-			if ((opcode = ("100000" or "100001" or "100010" or "100011") and c_o ='1' and z_o ='1') or 
-			    (opcode = ("100100" or "100101" or "100110" or "100111") and c_o = '0' and z_o ='0') or 
-				 (c_o = '1' and z_o ='1') or (opcode =("110000" or "110001" or "110010" or "110011")) or
-				 (opcode =("111100" or "111101" or "111110" or "111111"))) then 
-				 
-			     pc_mux_branch <= '1';
-				  if2id_wr_and_a <= '0';
-				  id2or_reset_all_wr <= '1';
-				  or2ex_reset_all_wr <= '1';
-			else 
-				  pc_mux_branch <= '0';
-				  if2id_wr_and_a <= '1';
-				  id2or_reset_all_wr <= '0';
-				  or2ex_reset_all_wr <= '0';
-			end if;
-			
-		end process;
-end architecture blackboxed4;
-
---------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------NEW COMPONENT-----------------------------------------
---------------------------------------------------------------DON'T BLINK-------------------------------------------
---------------------------------------------------------------LEST YOU MISS-----------------------------------------
---------------------------------------------------------------------------------------------------------------------
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
-library Work;
-entity bb_pc_mux is
-	port (
-			pc_mux_branch, bp_control:in std_logic;
-		   op2ex_opcode : in std_logic_vector(3 downto 0);
-			pc_mux_control_bits : out std_logic_vector(1 downto 0));
-end entity bb_pc_mux;
-
-architecture blackboxed5 of bb_pc_mux is
-	begin
-		edit_process: process(pc_mux_branch, bp_control,op2ex_opcode )
-		begin
-			if (pc_mux_branch = '1') then 
-				  pc_mux_control_bits <= "01";
-			elsif (op2ex_opcode = "1101") then 
-				  pc_mux_control_bits <= "10";
-			elsif (bp_control = '1') then 
-				  pc_mux_control_bits <= "11";
-			else 
-				  pc_mux_control_bits <= "00";
-				
-			end if;
-			
-		end process;
-end architecture blackboxed5;
-
---------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------NEW COMPONENT-----------------------------------------
---------------------------------------------------------------DON'T BLINK-------------------------------------------
---------------------------------------------------------------LEST YOU MISS-----------------------------------------
---------------------------------------------------------------------------------------------------------------------
-
-
-
 library ieee;
 use ieee.std_logic_1164.all;
 
