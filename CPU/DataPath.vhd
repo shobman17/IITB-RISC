@@ -114,10 +114,10 @@ architecture trivial of DataPath is
 			port map(clk, IF_IM_in, IF_IM_out);
 			
 		PC_MUX_Blackbox: component bb_pu_mux
-			port map(clk, IF_IM_in, IF_IM_out);
+			port map(pc_mux_branch, BP_control, EX_opcode, PC_mux_ctrl);
 			
 		PC_MUX: component mux_4_1
-			port map(IF_adder1_out, EX_adder2_out, EX_D1_MUX_out, Prediction, BP_control, update_PC);
+			port map(IF_adder1_out, EX_adder2_out, EX_D1_MUX_out, Prediction, PC_mux_ctrl(1), PC_mux_ctrl(0), update_PC);
 			
 		BranchPredictor: component branch_predictor
 			port map(IF_IM_in, EX_IM_in, update_PC, BR_WR, hb_in, Prediction, BP_control);
@@ -159,27 +159,22 @@ architecture trivial of DataPath is
 			port map(OR_5_3, OR_11_9, MUX_RF_A2, A2_in);
 		
 		reg_file: component prog_reg
-			port map(A1_in, A2_in, A3, D1, D2, D3, clk, RF_WR);
+			port map(A1_in, A2_in, A3, D1, D2, RF_writeback, clk, RF_WR);
 			
 		subtractor0: component subtractor
 			port map(subtractor_in, subtractor_out);
 		
 		D1BlackBox: component bbD1
-			port map(A1_in, or2ex_a3, ex2ma_a3, ma2wb_a3, or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr, );
-			
-		mux_rf_a1_output, or2ex_a3, ex2ma_a3, ma2wb_a3:in std_logic_vector(2 downto 0);
-		
-		   id2or_mux_alu_a : in std_logic_vector(1 downto 0);
-			mux_rf_d1_1, mux_rf_d1_0 : out std_logic);
+			port map(A1_in, or2ex_a3, ex2ma_a3, ma2wb_a3, or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr, id2or_mux_alu_a, mux_rf_d1_1, mux_rf_d1_0);
 			
 		D2BlackBox: component bbD2
-			port map();
-			
+			port map(A2_in, or2ex_a3, ex2ma_a3, ma2wb_a3, or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr, OR_alpha, id2or_mux_alu_b,	mux_rf_d2_1, mux_rf_d2_0);
+		
 		RF_D1_Mux: component mux_4_1
-			port map(D1, );
+			port map(D1, EX_ALU_out, MA_out, RF_writeback, mux_rf_d1_1, mux_rf_d1_0);
 		
 		RF_D2_Mux: component mux_4_1
-			port map(D2);
+			port map(D2,EX_ALU_out, MA_out, RF_writeback, mux_rf_d2_1, mux_rf_d2_0);
 		
 		extender9: component extender_nine
 			port map(OR_8_6, OR_5_3, OR_2_0, OR_E9out);
@@ -187,27 +182,46 @@ architecture trivial of DataPath is
 		sextender6: component signed_extender
 			port map(OR_5_3, OR_2_0, OR_SE6out);
 			
-		-- viola we are now done with all of the storage units except memory
-		priori_enc: component Priority
-			port map(s1_3, enc_out);
-			
-		decoder: component decoder_3to8
-			port map(enc_out, dec_out);
-			
-		e8: component extender8
-			port map(dec_out, e8_out);
+		DataMemory: component Memory_Data	
+			port map(clk, m_wr, m_rd, MA_ALU_out, Mem_D3_in, Mem_D1);
 		
-		lshift7: component Lshifter7
-			port map(s1_1, L7_out);
+		mux_alu_a: component mux_4_1
+			port map(EX_D1_MUX_out, "0000000000000000", "0000000000000010", "0000000000000010", mux_alu_a_1, mux_alu_a_0, alu_ain);
+		
+		mux_alu_b: component mux_2_1
+			port map(EX_D2_MUX_out, MA_SE6out, mux_alu_b, alu_bin);
 			
-		se6: component signed_extender
-			port map(s1_2, se6_out);
-			
-		mem: component memory
-			port map(m_a, m_in, m_wr, m_rd, m_out);
-			
+		mux_alu_carry: component mux_4_1
+			port map('0', EX_c, EX_c, '1', alu_carry_1, alu_carry_0, alu_carry);
+		
 		alu_comp: component alu
-			port map(alu_a, alu_b, alu_ctrl, alu_out, z_in, c_in);
+			port map(alu_ain, alu_bin, alu_op, alu_comp, alu_carry, alu_out, z_o, c_o);
+			
+		CZFlags: component CZreg
+			port map(c_o, z_o, clk, c_wr, z_wr, EX_c, EX_z);
+			
+		mux_adder_A: component mux_2_1
+			port map(EX_D2_MUX_out, EX_IM_in, MUX_ADDER_A, adder2_ain);
+			
+		mux_adder_B: component mux_4_1
+			port map("0000000000000000", EX_LS9out, EX_LS9out, EX_LS6out,MUX_ADDER_B_1, MUX_ADDER_B_0, adder2_bin);
+			
+		adder2: component ADDER
+			port map(adder2_ain, adder2_bin, EX_adder2_out);
+			
+		CZBlackBox: component bb_cwr_zwr
+			port map(ex2ma_c, ex2ma_z, EX_opcode, c_wr, z_wr, ex_rf_wr_and_a);
+			
+		BranchingBlackBox: component bb_branching
+			port map(c_o, z_o, EX_opcode, pc_mux_branch, if2id_wr_and_a, id2or_reset_all_wr, or2ex_reset_all_wr);
+		
+		Mem_out_MUX: component mux_2_1
+			port map(MA_ALU_out, Mem_D1, MUX_MEM_OUT, MA_out);
+			
+		WB_MUX: component mux_4_1
+			port map(WB_default, WB_default, WB_adder1_out, WB_E9out, WB_MUX_1, WB_MUX_1, RF_writeback);
+		
+end entity CZreg;
 			
 		only_process: process(state)-- don't know for sure what exactly should be in the static sensitivity list
 		begin

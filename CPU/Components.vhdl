@@ -159,7 +159,8 @@ use ieee.numeric_std.all;
 library Work;
 entity bbD1 is
 	port (
-			mux_rf_a1_output, or2ex_a3, ex2ma_a3, ma2wb_a3, or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr:in std_logic_vector(2 downto 0);
+			mux_rf_a1_output, or2ex_a3, ex2ma_a3, ma2wb_a3:in std_logic_vector(2 downto 0);
+			or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr: in std_logic
 		   id2or_mux_alu_a : in std_logic_vector(1 downto 0);
 			mux_rf_d1_1, mux_rf_d1_0 : out std_logic);
 end entity bbD1;
@@ -200,7 +201,8 @@ use ieee.numeric_std.all;
 library Work;
 entity bbD2 is
 	port (
-			mux_rf_a1_output, or2ex_a3, ex2ma_a3, ma2wb_a3, or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr, alpha:in std_logic;
+			mux_rf_a1_output, or2ex_a3, ex2ma_a3, ma2wb_a3: in std_logic_vector(2 downto 0);
+			or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr, alpha:in std_logic;
 		   id2or_mux_alu_b : in std_logic_vector(1 downto 0);
 			mux_rf_d2_1, mux_rf_d2_0 : out std_logic);
 end entity bbD2;
@@ -243,7 +245,7 @@ entity bb_cwr_zwr is
 	port (
 			ex2ma_c, ex2ma_z:in std_logic;
 		   opcode : in std_logic_vector(5 downto 0);
-			c_wr, z_wr : out std_logic);
+			c_wr, z_wr, ex_rf_wr_and_a : out std_logic);
 end entity bbD3;
 
 architecture blackboxed3 of bb_cwr_zwr is
@@ -251,25 +253,36 @@ architecture blackboxed3 of bb_cwr_zwr is
 		edit_process: process(ex2ma_c, ex2ma_z, opcode)
 		begin
 			if (opcode = "000100" or opcode = "000111" or opcode = "000000" or opcode = "000001" or opcode = "000010" or opcode = "000011") then
-			   c_wr<= '1';
+				c_wr<= '1';
 				z_wr<= '1';
+				rf_wr_and_a<='1';
 			elsif (opcode = "000110" and ex2ma_c ='1') then 
 				c_wr<= '1';
+				rf_wr_and_a<='1';
 				z_wr<= '1';
 			elsif (opcode = "000101" and ex2ma_z ='1') then 
 				c_wr<= '1';
+				rf_wr_and_a<='1';
 				z_wr<= '1';
 			elsif (opcode = "001000" or opcode = "001011" ) then 
 				c_wr<= '0';
+				rf_wr_and_a<='1';
 				z_wr<= '1';
 			elsif (opcode = "001010" and ex2ma_c ='1') then 
 				c_wr<= '0';
+				rf_wr_and_a<='1';
 				z_wr<= '1';
 			elsif (opcode = "001001" and ex2ma_z ='1') then 
 				c_wr<= '0';
+				rf_wr_and_a<='1';
 				z_wr<= '1';
-			else 
+			elsif (opcode = "000110" or opcode = "000101" or opcode = "001010" or opcode = "001001")
 			   c_wr<= '0';
+				z_wr<= '0';
+				rf_wr_and_a<='0';
+			else
+				rf_wr_and_a<='1';
+				c_wr<= '0';
 				z_wr<= '0';
 			end if;
 			
@@ -740,7 +753,7 @@ use ieee.numeric_std.all;
 entity Memory_Data is 
 		port(
 				clk, m_wr, m_rd: in std_logic; 
-				mem_addr, mem_in: in std_logic_vector(15 downto 0);
+				mem_addr, mem_addr_edit, mem_in: in std_logic_vector(15 downto 0);
 				mem_out: out std_logic_vector(15 downto 0)
 			 ); 
 end entity; 
@@ -758,7 +771,7 @@ begin
 		end if;
     if falling_edge(clk) then
       if m_wr = '1' then
-        memorykagyaan(to_integer(unsigned(mem_addr))) <= mem_in;  -- Write
+        memorykagyaan(to_integer(unsigned(mem_addr_edit))) <= mem_in;  -- Write
 
       end if;
     end if;
