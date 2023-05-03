@@ -9,9 +9,9 @@ entity controller is
             instr_8_6 : out std_logic_vector(2 downto 0);
             instr_5_3 : out std_logic_vector(2 downto 0);
             instr_2_0 : out std_logic_vector(2 downto 0);
+			instr_8_0 : out std_logic_vector(9 downto 0);
+			instr_5_0 : out std_logic_vector(6 downto 0);
             instr_7_0 : out std_logic_vector(7 downto 0);
-            instr_5_0 : out std_logic_vector(5 downto 0);
-            instr_8_0 : out std_logic_vector(8 downto 0);
             alpha_decode : out std_logic;
             ID_st : out std_logic; -- ID2OR_WR
             OR_st : out std_logic_vector(2 downto 0); -- OR2EX_WR, MUX_RF_A1, MUX_RF_A2
@@ -38,7 +38,7 @@ begin
     instr_7_0 <= instruction(7 downto 0);
     instr_5_0 <= instruction(5 downto 0);
     instr_8_0 <= instruction(8 downto 0);
-    alpha_decode <= not instruction(15) and instruction(14) and instruction(13);
+    alpha_decode <= (not instruction(15)) and instruction(14) and instruction(13);
     ID2OR_WR <= '1';
     OR2EX_WR <= '1';
     EX2MA_WR <= '1';

@@ -70,14 +70,29 @@ architecture trivial of DataPath is
 	for all: ADDER
 		use entity work.ADDER(add);
 		
+	for all: LShifter9
+		use entity work.LShifter9(multiply_by_two);
+		
+	for all: LShifter6
+		use entity work.LShifter6(multiply_by_two);
+		
 	for all: ALU
 		use entity work.ALU(addnand);
 		
 	for all: IF2IDreg
 		use entity work.IF2IDreg(bhv1);
+		
+	for all: controller
+		use entity work.controller(dictator);
 	
 	for all: reverse_decoder_3to8
 		use entity work.reverse_decoder_3to8(dec);
+	
+	for all: signed_extender
+		use entity work.signed_extender(ext);
+	
+	for all: prog_reg
+		use entity work.prog_reg(pr);
 	
 	signal IF_IM_in, update_PC, IF_IM_out, ID_IM_in, EX_D1_MUX_out, EX_adder2_out, Prediction, IF_adder1_out, ID_adder1_out, OR_adder1_out, MA_adder1_out, WB_adder1_out, : std_logic_vector(15 downto 0):=(others=>'0');
 	signal clk, PC_WR, BP_control: std_logic;
@@ -123,15 +138,54 @@ architecture trivial of DataPath is
 			port map(singular_one, if_LMSM, alpha_update);
 		
 		Decoded_MUX: component mux_2_1
-			port map(LMSM_imm, subtractor_out, updated_imm);
+			port map(ID_7_0, subtractor_out, ID_alpha, updated_imm);
 			
 		customencoder: component custom_encoder
 			port map(updated_imm, ID_encoded, singular_one, all_zeros);
 			
-		--Now we will try and connect the shift register to everything
+		decoder: component controller
+			port map(ID_IM_out, ID_alpha, ID_opcode, ID_11_9, ID_8_6, ID_5_3, ID_2_0, ID_7_0, ID_8_0, ID_5_0, if_LMSM, ID_st, OR_st, EX_st, MA_st, WB_st);
+		
+		lshift6: component LShifter6
+			port map(ID_5_0, ID_LS6out);
+			
+		lshift9: component LShifter9
+			port map(ID_8_0, ID_LS9out);
+		
+		mux_rf_a1: component mux_2_1
+			port map(OR_8_6, OR_encoded, MUX_RF_A1, A1_in);
+			
+		mux_rf_a2: component mux_2_1
+			port map(OR_5_3, OR_11_9, MUX_RF_A2, A2_in);
 		
 		reg_file: component prog_reg
-			port map(a1, a2, a3, d1, d2, d3, clk, r_wr);
+			port map(A1_in, A2_in, A3, D1, D2, D3, clk, RF_WR);
+			
+		subtractor0: component subtractor
+			port map(subtractor_in, subtractor_out);
+		
+		D1BlackBox: component bbD1
+			port map(A1_in, or2ex_a3, ex2ma_a3, ma2wb_a3, or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr, );
+			
+		mux_rf_a1_output, or2ex_a3, ex2ma_a3, ma2wb_a3:in std_logic_vector(2 downto 0);
+		
+		   id2or_mux_alu_a : in std_logic_vector(1 downto 0);
+			mux_rf_d1_1, mux_rf_d1_0 : out std_logic);
+			
+		D2BlackBox: component bbD2
+			port map();
+			
+		RF_D1_Mux: component mux_4_1
+			port map(D1, );
+		
+		RF_D2_Mux: component mux_4_1
+			port map(D2);
+		
+		extender9: component extender_nine
+			port map(OR_8_6, OR_5_3, OR_2_0, OR_E9out);
+			
+		sextender6: component signed_extender
+			port map(OR_5_3, OR_2_0, OR_SE6out);
 			
 		-- viola we are now done with all of the storage units except memory
 		priori_enc: component Priority

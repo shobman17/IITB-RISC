@@ -86,7 +86,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity extender_nine is
-	port (input: in std_logic_vector(8 downto 0);
+	port (in1, in2, in3: in std_logic_vector(2 downto 0);
 			output: out std_logic_vector(15 downto 0));
 end entity extender_nine;
 
@@ -94,7 +94,7 @@ architecture major_extending of extender_nine is
 begin
 	--new_process: process(input)
 	--begin
-	output <= "0000000" & input;
+	output <= "0000000" & in1 & in2 & in3;
 	--end process;
 end major_extending;
 
@@ -159,7 +159,7 @@ use ieee.numeric_std.all;
 library Work;
 entity bbD1 is
 	port (
-			mux_rf_a1_output, or2ex_a3, ex2ma_a3, ma2wb_a3, or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr:in std_logic;
+			mux_rf_a1_output, or2ex_a3, ex2ma_a3, ma2wb_a3, or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr:in std_logic_vector(2 downto 0);
 		   id2or_mux_alu_a : in std_logic_vector(1 downto 0);
 			mux_rf_d1_1, mux_rf_d1_0 : out std_logic);
 end entity bbD1;
@@ -890,3 +890,250 @@ end predict;
 --------------------------------------------------------------DON'T BLINK-------------------------------------------
 --------------------------------------------------------------LEST YOU MISS-----------------------------------------
 --------------------------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity controller is
+	port (instruction: in std_logic_vector(15 downto 0);
+            alpha : in std_logic;
+		    opcode : out std_logic_vector(5 downto 0);
+            instr_11_9 : out std_logic_vector(2 downto 0);
+            instr_8_6 : out std_logic_vector(2 downto 0);
+            instr_5_3 : out std_logic_vector(2 downto 0);
+            instr_2_0 : out std_logic_vector(2 downto 0);
+            instr_7_0 : out std_logic_vector(7 downto 0);
+            instr_5_0 : out std_logic_vector(5 downto 0);
+            instr_8_0 : out std_logic_vector(8 downto 0);
+            alpha_decode : out std_logic;
+            ID_st : out std_logic; -- ID2OR_WR
+            OR_st : out std_logic_vector(2 downto 0); -- OR2EX_WR, MUX_RF_A1, MUX_RF_A2
+            EX_st : out std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
+            MA_st : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
+            WB_st : out std_logic_vector(1 downto 0)); -- WB_MUX_1, WB_MUX_0
+end entity controller;
+
+architecture dictator of controller is
+
+    signal ID2OR_WR: std_logic;
+    signal OR2EX_WR, MUX_RF_A1, MUX_RF_A2: std_logic;
+    signal EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1: std_logic;
+    signal MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT: std_logic;
+    signal WB_MUX_1, WB_MUX_0: std_logic;
+	 
+begin
+
+    opcode <= instruction(15 downto 12) & instruction(1 downto 0);
+    instr_11_9 <= instruction(11 downto 9);
+    instr_8_6 <= instruction(8 downto 6);
+    instr_5_3 <= instruction(5 downto 3);
+    instr_2_0 <= instruction(2 downto 0);
+    instr_7_0 <= instruction(7 downto 0);
+    instr_5_0 <= instruction(5 downto 0);
+    instr_8_0 <= instruction(8 downto 0);
+    alpha_decode <= not instruction(15) and instruction(14) and instruction(13);
+    ID2OR_WR <= '1';
+    OR2EX_WR <= '1';
+    EX2MA_WR <= '1';
+    MA2WB_WR <= '1';
+    
+    -- All signals with Instruction Decode(ID) Stage 
+    ID_st <= ID2OR_WR;
+
+    -- All signals with Operand Read(OR) Stage 
+    MUX_RF_A1 <= (not instruction(15)) and instruction(14) and instruction(13) and instruction(12);
+    MUX_RF_A2 <= instruction(15) or instruction(14);
+    OR_st <= OR2EX_WR & MUX_RF_A1 & MUX_RF_A2;
+
+    -- All signals with Execute(EX) Stage 
+    MUX_ALU_A_0 <= (not instruction(15)) and instruction(14) and instruction(13) and alpha;
+    MUX_ALU_A_1 <= (not instruction(15)) and instruction(14) and instruction(13);
+    MUX_ALU_B <= ((not instruction(15)) and instruction(14) and (not instruction(13))) 
+                    or (not (instruction(15) or instruction(14) or instruction(13) or instruction(12)));
+    with instruction(15 downto 12) select
+        ALU_CARRY_1 <= '1' when "0001",
+							  '1' when "1000",
+                       '1' when "1001",
+                       '1' when "1011",
+                       '0' when others;
+    with instruction(15 downto 12) select
+        ALU_CARRY_0 <= '1' when "1000",
+                       '1' when "1001",
+                       '1' when "1011",
+                       '0' when others;                
+    with instruction(15 downto 12) select
+        ALU_OPER <= '1' when "0010",
+                    '0' when others;
+    with instruction(15 downto 12) select
+        ALU_COMPLEMENT  <= instruction(2) when "0001",
+                           instruction(2) when "0010",
+                           '1' when "1000",
+                           '1' when "1001",
+                           '1' when "1011",
+                           '0' when others;
+    MUX_ADDER_A <= not(instruction(15) and instruction(14) and instruction(13) and instruction(12));
+    MUX_ADDER_B_0 <= '1';
+    MUX_ADDER_B_1 <= not(instruction(15) and instruction(14) and instruction(13) and instruction(12));
+    EX_st <= EX2MA_WR & MUX_ALU_A_0 & MUX_ALU_A_1 & MUX_ALU_B & ALU_CARRY_1 & ALU_CARRY_0 & ALU_OPER & ALU_COMPLEMENT & MUX_ADDER_A & MUX_ADDER_B_0 & MUX_ADDER_B_1;
+    
+    -- All signals with Memory Access(MA) Stage 
+    DATA_MEM_WR <= (not instruction(15)) and instruction(14) and instruction(12);
+    DATA_MEM_RD <= (not instruction(15)) and instruction(14) and (not instruction(12));
+    MUX_MEM_OUT <= (not instruction(15)) and instruction(14) and (not instruction(12));
+	 MA_st <= MA2WB_WR & DATA_MEM_WR & DATA_MEM_RD & MUX_MEM_OUT; 
+
+    -- All signals with Write Back(WB) Stage 
+    WB_MUX_1 <= (instruction(15) and instruction(14)) 
+            or ((not instruction(15)) and (not instruction(14)) and instruction(13) and instruction(12));
+    WB_MUX_0 <= (not instruction(15)) and (not instruction(14)) and instruction(13) and instruction(12);
+	 WB_st <= WB_MUX_1 & WB_MUX_0;
+
+end dictator;
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------NEW COMPONENT-----------------------------------------
+--------------------------------------------------------------DON'T BLINK-------------------------------------------
+--------------------------------------------------------------LEST YOU MISS-----------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+-----------------------------------LEFT SHIFTER 9 BIT----Multiply by two------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity Lshifter9 is
+	port (inp : in std_logic_vector (8 downto 0);
+			outp : out std_logic_vector (15 downto 0));
+end entity LShifter9;
+
+architecture  of Lshifter9 is
+	begin multiply_by_two
+		outp(15 downto 10) <= "000000";
+		outp(9 downto 1) <= inp;
+		outp(0) <= '0';
+end multiply_by_two;
+
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------NEW COMPONENT-----------------------------------------
+--------------------------------------------------------------DON'T BLINK-------------------------------------------
+--------------------------------------------------------------LEST YOU MISS-----------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+-----------------------------------LEFT SHIFTER 6 BIT----Multiply by two------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity Lshifter6 is
+	port (inp : in std_logic_vector (5 downto 0);
+			outp : out std_logic_vector (15 downto 0));
+end entity LShifter6;
+
+architecture  of Lshifter6 is
+	begin multiply_by_two
+		outp(15 downto 7) <= "000000000";
+		outp(6 downto 1) <= inp;
+		outp(0) <= '0';
+end multiply_by_two;
+
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------NEW COMPONENT-----------------------------------------
+--------------------------------------------------------------DON'T BLINK-------------------------------------------
+--------------------------------------------------------------LEST YOU MISS-----------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+library work;
+use work.all;
+
+entity prog_reg is
+	port (A1, A2, A3: in std_logic_vector(2 downto 0);
+			D1, D2: out std_logic_vector(15 downto 0);
+			D3: in std_logic_vector(15 downto 0);
+			PC_in: in std_logic_vector(15 downto 0);
+			PC_out: out std_logic_vector(15 downto 0);
+			PC_enable: in std_logic;
+			clk: in std_logic;
+			w_enable: in std_logic);
+end entity prog_reg;
+
+architecture pr of prog_reg is
+	-- These signals dictate which registers are allowed to be written
+	signal e0, e1, e2, e3, e4, e5, e6,  e7: std_logic;
+	-- These signals carry the output from each register
+	signal r0, r1, r2, r3, r4, r5, r6, r7: std_logic_vector(15 downto 0);
+begin
+
+	-- Assign signals to control write enable for individual registers
+	e0 <= w_enable and not(A3(2)) and not(A3(1)) and not(A3(0));
+	e1 <= w_enable and not(A3(2)) and not(A3(1)) and (A3(0));
+	e2 <= w_enable and not(A3(2)) and (A3(1)) and not(A3(0));
+	e3 <= w_enable and not(A3(2)) and (A3(1)) and (A3(0));
+	e4 <= w_enable and (A3(2)) and not(A3(1)) and not(A3(0));
+	e5 <= w_enable and (A3(2)) and not(A3(1)) and (A3(0));
+	e6 <= w_enable and (A3(2)) and (A3(1)) and not(A3(0));
+	e7 <= w_enable and (A3(2)) and (A3(1)) and (A3(0));
+	
+	-- Initialise the registers
+	reg0: T_reg port map (input => D3, w_enable => e0, clk => clk, output => r0);
+	reg1: T_reg port map (input => D3, w_enable => e1, clk => clk, output => r1);
+	reg2: T_reg port map (input => D3, w_enable => e2, clk => clk, output => r2);
+	reg3: T_reg port map (input => D3, w_enable => e3, clk => clk, output => r3);
+	reg4: T_reg port map (input => D3, w_enable => e4, clk => clk, output => r4);
+	reg5: T_reg port map (input => D3, w_enable => e5, clk => clk, output => r5);
+	reg6: T_reg port map (input => D3, w_enable => e6, clk => clk, output => r6);
+	reg7: T_reg port map (input => D3, w_enable => e7, clk => clk, output => r7);
+	
+	with A1 select
+		D1 <= r0 when "000",
+				r1 when "001",
+				r2 when "010",
+				r3 when "011",
+				r4 when "100",
+				r5 when "101",
+				r6 when "110",
+				r7 when "111";
+	
+	with A2 select
+		D2 <= r0 when "000",
+				r1 when "001",
+				r2 when "010",
+				r3 when "011",
+				r4 when "100",
+				r5 when "101",
+				r6 when "110",
+				r7 when "111";
+				
+	PC_out <= r0;
+	writePC: process(clk) is
+	begin
+		if(falling_edge(clk)) then
+			if(PC_enable = '1') then 
+				r0 <= PC_in;
+			end if;
+		end if;
+	end process writePC;
+end pr;
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------NEW COMPONENT-----------------------------------------
+--------------------------------------------------------------DON'T BLINK-------------------------------------------
+--------------------------------------------------------------LEST YOU MISS-----------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity signed_extender is
+	port (in1, in2: in std_logic_vector(5 downto 0);
+			output: out std_logic_vector(15 downto 0));
+end entity signed_extender;
+
+architecture ext of signed_extender is
+begin
+	conv_process: process(input)
+	begin
+		if (input(5) = '0') then
+			output <= "0000000000" & in1 & in2;
+		else 
+			output <= "1111111111" & in1 & in2;
+		end if;
+	end process;
+end ext;
