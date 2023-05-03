@@ -276,6 +276,81 @@ architecture blackboxed3 of bb_cwr_zwr is
 		end process;
 end architecture blackboxed3;
 
+
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------NEW COMPONENT-----------------------------------------
+--------------------------------------------------------------DON'T BLINK-------------------------------------------
+--------------------------------------------------------------LEST YOU MISS-----------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library Work;
+entity bb_pc_mux is
+	port (
+			pc_mux_branch, bp_control:in std_logic;
+		   op2ex_opcode : in std_logic_vector(3 downto 0);
+			pc_mux_control_bits : out std_logic_vector(1 downto 0));
+end entity bb_pc_mux;
+
+architecture blackboxed5 of bb_pc_mux is
+	begin
+		edit_process: process(pc_mux_branch, bp_control,op2ex_opcode )
+		begin
+			if (pc_mux_branch = '1') then 
+				  pc_mux_control_bits <= "01";
+			elsif (op2ex_opcode = "1101") then 
+				  pc_mux_control_bits <= "10";
+			elsif (bp_control = '1') then 
+				  pc_mux_control_bits <= "11";
+			else 
+				  pc_mux_control_bits <= "00";
+				
+			end if;
+			
+		end process;
+end architecture blackboxed5;
+
+
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------NEW COMPONENT-----------------------------------------
+--------------------------------------------------------------DON'T BLINK-------------------------------------------
+--------------------------------------------------------------LEST YOU MISS-----------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library Work;
+entity bb_branching is
+	port (c_o, z_o:in std_logic;
+		   opcode : in std_logic_vector(5 downto 0);
+			 pc_mux_branch,if2id_wr_and_a, id2or_reset_all_wr, or2ex_reset_all_wr  : out std_logic);
+end entity bb_branching;
+
+architecture blackboxed4 of bb_branching is
+	begin
+		edit_process: process(c_o, z_o, opcode)
+		begin
+			if ((opcode = ("100000" or "100001" or "100010" or "100011") and c_o ='1' and z_o ='1') or 
+			    (opcode = ("100100" or "100101" or "100110" or "100111") and c_o = '0' and z_o ='0') or 
+				 (c_o = '1' and z_o ='1') or (opcode =("110000" or "110001" or "110010" or "110011")) or
+				 (opcode =("111100" or "111101" or "111110" or "111111"))) then 
+				 
+			     pc_mux_branch <= '1';
+				  if2id_wr_and_a <= '0';
+				  id2or_reset_all_wr <= '1';
+				  or2ex_reset_all_wr <= '1';
+			else 
+				  pc_mux_branch <= '0';
+				  if2id_wr_and_a <= '1';
+				  id2or_reset_all_wr <= '0';
+				  or2ex_reset_all_wr <= '0';
+			end if;
+			
+		end process;
+end architecture blackboxed4;
 --------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------NEW COMPONENT-----------------------------------------
 --------------------------------------------------------------DON'T BLINK-------------------------------------------
@@ -737,3 +812,81 @@ architecture bhv1 of IF2IDreg is
 			
 		end process;
 end architecture bhv1;
+
+
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------NEW COMPONENT-----------------------------------------
+--------------------------------------------------------------DON'T BLINK-------------------------------------------
+--------------------------------------------------------------LEST YOU MISS-----------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity branch_predictor is 
+	generic (
+		addrSize    : integer   := 16;
+		tableSize   : integer   := 64);
+	port(
+		in_IF, in_EXE, in_pred: in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
+		BR_WR: in std_logic; -- if BR_WR is true then we update the LUT else we just read
+		hb_in: in std_logic; -- input for history bit to write to this table
+		out_pred: out std_logic_vector(15 downto 0);
+		branch: out std_logic); -- whether to branch ot not
+end branch_predictor;
+
+architecture predict of branch_predictor is
+	
+	signal inputTable: std_logic_vector(addrSize*tableSize-1 downto 0) := (others =>'0');
+	signal historyBit: std_logic_vector(tableSize - 1 downto 0) := (others => '0');
+	signal predTable : std_logic_vector(addrSize*tableSize-1 downto 0) := (others =>'0');
+	--variable head    : integer := 0; -- where to write a new entry	
+	
+begin
+	out_pred <= "0000000000000000";
+	branch <= '0';
+--	readTable: process(in_IF) is
+--		variable found: std_logic := '0';
+--	begin
+--		if(in_IF(15) and ((not in_IF(13) and not in_IF(12)) or (not in_IF(14) and in_IF(12)))) then -- check if opcode is of branching instruction
+--			searchTable: for IR in 0 to tableSize - 1 loop
+--				if(inputTable(addrSize*IR to addrSize*(IR+1) - 1) = in_IF and historyBit(IR)) then
+--					out_pred <= predTable(addrSize*IR to addrSize*(IR+1) - 1);
+--					branch <= '1';
+--					found := '1'; --match is found
+--					EXIT searchTable;
+--				end if; 
+--			end loop searchTable
+--			
+--			if(not found) then -- return dummy prediciton
+--				branch <= '0';
+--				out_pred <= "0000000000000000";
+--			end if;
+--		else 
+--			branch <= '0';
+--			out_pred <= "0000000000000000";
+--		end if;
+--	end process readTable;
+--	
+--	writeTable: process(in_EXE, in_pred, BR_WR, hb_in) is --write to the LUT by changing the hb or adding a new entry
+--		variable found: std_logic := '0';
+--	begin
+--		if(in_EXE(15) and ((not in_EXE(13) and not in_EXE(12)) or (not in_EXE(14) and in_EXE(12))) and BR_WR) then
+--			searchTable2: for IR in 0 to tableSize - 1 loop
+--				if(inputTable(addrSize*IR to addrSize*(IR+1) - 1) = in_EXE) then
+--					found := '1'; --match is found
+--					historyBit(IR) <= hb_in;
+--					EXIT searchTable2;
+--				end if; 
+--			end loop searchTable2
+--			if(not found) then
+--				inputTable(addrSize*head to addrSize*(head + 1)-1) <= in_EXE;
+--				historyBit(head) <= hb_in;
+--				predTable(addrSize*head to addrSize*(head + 1)-1) <= in_pred;
+				
+end predict;
+
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------NEW COMPONENT-----------------------------------------
+--------------------------------------------------------------DON'T BLINK-------------------------------------------
+--------------------------------------------------------------LEST YOU MISS-----------------------------------------
+--------------------------------------------------------------------------------------------------------------------

@@ -4,6 +4,9 @@ use ieee.std_logic_1164.all;
 library work;
 use work.Components.all;
 
+use work.Gates.all;
+
+
 entity DataPath is
 	port(clk, reset: in std_logic);
 end entity Datapath;
@@ -43,6 +46,12 @@ architecture trivial of DataPath is
 	for all: bb_cwr_zwr
 		use entity work.bb_cwr_zwr(blackboxed3);
 		
+	for all: bb_branching
+		use entity work.bb_cwr_zwr(blackboxed4);
+		
+	for all: bb_pc_mux
+		use entity work.bb_cwr_zwr(blackboxed5);
+		
 	for all: Lshifter6
 		use entity work.Leftshifter(yes);
 	
@@ -70,8 +79,8 @@ architecture trivial of DataPath is
 	for all: reverse_decoder_3to8
 		use entity work.reverse_decoder_3to8(dec);
 	
-	signal IF_IM_in, update_PC, IF_IM_out, ID_IM_in, EX_D1_MUX_out, EX_adder2_out, IF_adder1_out, ID_adder1_out, OR_adder1_out, MA_adder1_out, WB_adder1_out, : std_logic_vector(15 downto 0):=(others=>'0');
-	signal clk, PC_WR: std_logic;
+	signal IF_IM_in, update_PC, IF_IM_out, ID_IM_in, EX_D1_MUX_out, EX_adder2_out, Prediction, IF_adder1_out, ID_adder1_out, OR_adder1_out, MA_adder1_out, WB_adder1_out, : std_logic_vector(15 downto 0):=(others=>'0');
+	signal clk, PC_WR, BP_control: std_logic;
 --	signal alu_a, alu_b, alu_out, s1_0, s1_10, s2_0, s2_1, s3_0, s3_1, s4_0, s4_1, s5_0, s5_1, d1, d2, d3, e8_out, se6_out, L7_out, m_a, m_in, m_out: std_logic_vector(15 downto 0):=(others=>'0');
 --	signal a1, a2, a3, s6_0, s6_1, s1_7, s1_6, s1_5, enc_out: std_logic_vector(2 downto 0):=(others=>'0');
 --	signal alu_ctrl: std_logic_vector(1 downto 0);
@@ -89,12 +98,35 @@ architecture trivial of DataPath is
 		InstructionMemory: component Memory_Code
 			port map(clk, IF_IM_in, IF_IM_out);
 			
-		PC_MUX: component mux_4_1
-			port map(IF_adder1_out, EX_adder2_out, EX_D1_MUX_out, Prediction, update_PC);
+		PC_MUX_Blackbox: component bb_pu_mux
+			port map(clk, IF_IM_in, IF_IM_out);
 			
-		BranchPredictor: component 
+		PC_MUX: component mux_4_1
+			port map(IF_adder1_out, EX_adder2_out, EX_D1_MUX_out, Prediction, BP_control, update_PC);
+			
+		BranchPredictor: component branch_predictor
+			port map(IF_IM_in, EX_IM_in, update_PC, BR_WR, hb_in, Prediction, BP_control);
+
+		adder1: component ADDER
+			port map(IF_IM_in, "0000000000000010", IF_adder1_out);
 		
+		IF2ID: component IF2IDreg
+			port map(clk, IF2ID_WR, IF_IM_out, IF_IM_in, IF_adder1_out, ID_IM_out, ID_IM_in, ID_adder1_out);
+			
+		IF2ID_AND: component AND_2
+			port map(if2id_wr_and_a, not singular_one, IF2ID_WR);
+			
+		alpha_0: component alpha
+			port map(alpha_update, clk, ID_alpha);
+			
+		alpha_XOR: component XOR_2
+			port map(singular_one, if_LMSM, alpha_update);
 		
+		Decoded_MUX: component mux_2_1
+			port map(LMSM_imm, subtractor_out, updated_imm);
+			
+		customencoder: component custom_encoder
+			port map(updated_imm, ID_encoded, singular_one, all_zeros);
 			
 		--Now we will try and connect the shift register to everything
 		
