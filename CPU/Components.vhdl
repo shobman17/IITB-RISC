@@ -243,7 +243,7 @@ use ieee.numeric_std.all;
 library Work;
 entity bb_cwr_zwr is
 	port (
-			ex2ma_c, ex2ma_z:in std_logic;
+			EX_RF_WR, ex2ma_c, ex2ma_z:in std_logic;
 		   opcode : in std_logic_vector(5 downto 0);
 			c_wr, z_wr, ex_rf_wr_and_a : out std_logic);
 end entity bbD3;
@@ -255,33 +255,33 @@ architecture blackboxed3 of bb_cwr_zwr is
 			if (opcode = "000100" or opcode = "000111" or opcode = "000000" or opcode = "000001" or opcode = "000010" or opcode = "000011") then
 				c_wr<= '1';
 				z_wr<= '1';
-				rf_wr_and_a<='1';
+				rf_wr_and_a<=EX_RF_WR and '1';
 			elsif (opcode = "000110" and ex2ma_c ='1') then 
 				c_wr<= '1';
-				rf_wr_and_a<='1';
+				rf_wr_and_a<='1' and EX_RF_WR;
 				z_wr<= '1';
 			elsif (opcode = "000101" and ex2ma_z ='1') then 
 				c_wr<= '1';
-				rf_wr_and_a<='1';
+				rf_wr_and_a<='1' and EX_RF_WR;
 				z_wr<= '1';
 			elsif (opcode = "001000" or opcode = "001011" ) then 
 				c_wr<= '0';
-				rf_wr_and_a<='1';
+				rf_wr_and_a<='1' and EX_RF_WR;
 				z_wr<= '1';
 			elsif (opcode = "001010" and ex2ma_c ='1') then 
 				c_wr<= '0';
-				rf_wr_and_a<='1';
+				rf_wr_and_a<='1' and EX_RF_WR;
 				z_wr<= '1';
 			elsif (opcode = "001001" and ex2ma_z ='1') then 
 				c_wr<= '0';
-				rf_wr_and_a<='1';
+				rf_wr_and_a<='1' and EX_RF_WR;
 				z_wr<= '1';
 			elsif (opcode = "000110" or opcode = "000101" or opcode = "001010" or opcode = "001001")
 			   c_wr<= '0';
 				z_wr<= '0';
-				rf_wr_and_a<='0';
+				rf_wr_and_a<='0' and EX_RF_WR;
 			else
-				rf_wr_and_a<='1';
+				rf_wr_and_a<='1' and EX_RF_WR;
 				c_wr<= '0';
 				z_wr<= '0';
 			end if;
@@ -1150,3 +1150,356 @@ begin
 		end if;
 	end process;
 end ext;
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------NEW COMPONENT-----------------------------------------
+--------------------------------------------------------------DON'T BLINK-------------------------------------------
+--------------------------------------------------------------LEST YOU MISS-----------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+entity EX2MAreg is
+	port (
+			---------------------------------inputs
+			clk, EX2MA_WR: in std_logic;
+            reset_wr: in std_logic;
+            opcode_in: in std_logic_vector(5 downto 0);
+            instr_11_9_in : in std_logic_vector(2 downto 0);
+            E9_output_in: in std_logic_vector(15 downto 0);
+            ALU_output_in: in std_logic_vector(15 downto 0);
+            D2_output_in: in std_logic_vector(15 downto 0); 
+            enc_addr_in : in std_logic_vector(2 downto 0); -- output from custom encoder
+            PC2_in : in std_logic_vector(15 downto 0);
+            MA_st_in : in std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
+            WB_st_in : in std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            RF_WR_in: in std_logic;
+            ---------------------------------outputs
+            opcode_out: out std_logic_vector(5 downto 0);
+            instr_11_9_out : out std_logic_vector(2 downto 0);
+            E9_output_out: out std_logic_vector(15 downto 0);
+            ALU_output_out: out std_logic_vector(15 downto 0);
+            D2_output_out: out std_logic_vector(15 downto 0); 
+            enc_addr_out : out std_logic_vector(2 downto 0); -- output from custom encoder
+            PC2_out : out std_logic_vector(15 downto 0);
+            MA_st_out : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
+            WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            RF_WR_out: out std_logic
+    );
+end entity EX2MAreg;
+
+architecture bhv4 of EX2MAreg is
+	signal opcode_s: std_logic_vector(5 downto 0) := "000000";
+    signal instr_11_9_s, enc_addr_s: std_logic_vector(2 downto 0) := "000";
+    signal PC2_s, E9_output_s, D2_output_s, ALU_output_s: std_logic_vector(15 downto 0) := "0000000000000000";
+    signal MA_st_s: std_logic_vector(3 downto 0) := "0000";
+    signal WB_st_s: std_logic_vector(1 downto 0) := "00";
+    signal RF_WR_S: std_logic := '0';
+begin
+
+    opcode_out <= opcode_s;
+    instr_11_9_out <= instr_11_9_s;
+    E9_output_out <= E9_output_s;
+    ALU_output_out <= ALU_output_s;
+    D2_output_out <= D2_output_s;
+    enc_addr_out <= enc_addr_s;
+    PC2_out <= PC2_s;
+    MA_st_out <= MA_st_s;
+    WB_st_out <= WB_st_s;
+    RF_WR_out <= RF_WR_s;
+
+    edit_process: process(clk, EX2MA_WR, reset_wr) is
+    begin
+        if(falling_edge(clk) and EX2MA_WR = '1') then
+            opcode_s <= opcode_in;
+            instr_11_9_s <= instr_11_9_in;
+            E9_output_s <= E9_output_in;
+            ALU_output_s <= ALU_output_in;
+            D2_output_s <= D2_output_in;
+            enc_addr_s <= enc_addr_in;
+            PC2_s <= PC2_in;
+            MA_st_s <= MA_st_in;
+            WB_st_s <= WB_st_in;
+            RF_WR_s <= RF_WR_in;
+		end if;
+		if (falling_edge(clk) and reset_wr = '1') then
+            MA_st_s(2) <= '0'; --DATA_MEM_WR
+            RF_WR_s <= '0';
+        end if; 
+    end process edit_process;
+end architecture bhv4;
+
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------NEW COMPONENT-----------------------------------------
+--------------------------------------------------------------DON'T BLINK-------------------------------------------
+--------------------------------------------------------------LEST YOU MISS-----------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+entity ID2ORreg is
+	port (
+			---------------------------------inputs
+			clk, ID2OR_WR: in std_logic;
+            reset_wr: in std_logic;
+            opcode_in: in std_logic_vector(5 downto 0);
+            instr_11_9_in : in std_logic_vector(2 downto 0); 
+            instr_8_6_in : in std_logic_vector(2 downto 0); 
+            instr_5_3_in, instr_2_0_in : in std_logic_vector(2 downto 0); 
+            instr_5_0_in : in std_logic_vector(5 downto 0);  
+            instr_8_0_in : in std_logic_vector(8 downto 0); 
+            enc_addr_in : in std_logic_vector(2 downto 0); -- output from custom encoder
+            enc_input_in : in std_logic_vector(7 downto 0); -- input to custom encoder
+            LS6_in : in std_logic_vector(15 downto 0); -- output from leftshifter 6bit
+            LS9_in : in std_logic_vector(15 downto 0); -- output from leftshifter 9bit
+            PC_in : in std_logic_vector(15 downto 0);
+            PC2_in : in std_logic_vector(15 downto 0);
+            OR_st_in : in std_logic_vector(2 downto 0); -- OR2EX_WR, MUX_RF_A1, MUX_RF_A2
+            EX_st_in : in std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
+            MA_st_in : in std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
+            WB_st_in : in std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            RF_WR_in: in std_logic;
+            ---------------------------------outputs
+            opcode_out: out std_logic_vector(5 downto 0);
+            instr_11_9_out : out std_logic_vector(2 downto 0); --will go to RF
+            instr_8_6_out : out std_logic_vector(2 downto 0); --will go to RF
+            instr_5_3_out, instr_2_0_out : out std_logic_vector(2 downto 0); -- will go to RF
+            instr_5_0_out : out std_logic_vector(5 downto 0); -- will go to SE6
+            instr_8_0_out : out std_logic_vector(8 downto 0); -- will go to E9
+            enc_addr_out : out std_logic_vector(2 downto 0); -- output from custom encoder
+            enc_input_out : out std_logic_vector(7 downto 0); -- input to custom encoder
+            LS6_out : out std_logic_vector(15 downto 0); -- output from leftshifter 6bit
+            LS9_out : out std_logic_vector(15 downto 0); -- output from leftshifter 9bit
+            PC_out : out std_logic_vector(15 downto 0);
+            PC2_out : out std_logic_vector(15 downto 0);
+            OR_st_out : out std_logic_vector(2 downto 0); -- OR2EX_WR, MUX_RF_A1, MUX_RF_A2
+            EX_st_out : out std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
+            MA_st_out : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
+            WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            RF_WR_out: out std_logic
+    );
+end entity ID2ORreg;
+
+architecture bhv2 of ID2ORreg is
+	signal opcode_s, instr_5_0_s: std_logic_vector(5 downto 0) := "000000";
+    signal instr_11_9_s, instr_8_6_s, instr_5_3_s, instr_2_0_s, enc_addr_s, OR_st_s: std_logic_vector(2 downto 0) := "000";
+    signal instr_8_0_s: std_logic_vector(8 downto 0) := "000000000";
+    signal enc_input_s: std_logic_vector(7 downto 0) := "00000000";
+    signal LS6_s, LS9_s, PC_s, PC2_s: std_logic_vector(15 downto 0) := "0000000000000000";
+    signal EX_st_s: std_logic_vector(10 downto 0) := "00000000000";
+    signal MA_st_s: std_logic_vector(3 downto 0) := "0000";
+    signal WB_st_s: std_logic_vector(1 downto 0) := "00";
+    signal RF_WR_S: std_logic := '0';
+begin
+
+    opcode_out <= opcode_s;
+    instr_11_9_out <= instr_11_9_s;
+    instr_8_6_out <= instr_8_6_s;
+    instr_5_3_out <= instr_5_3_s;
+	instr_2_0_out <= instr_2_0_s
+    instr_5_0_out <= instr_5_0_s;
+    instr_8_0_out <= instr_8_0_s;
+    enc_addr_out <= enc_addr_s;
+    enc_input_out <= enc_input_s;
+    LS6_out <= LS6_s;
+    LS9_out <= LS9_s;
+    PC_out <= PC_s;
+    PC2_out <= PC2_s;
+    OR_st_out <= OR_st_s;
+    EX_st_out <= EX_st_s;
+    MA_st_out <= MA_st_s;
+    WB_st_out <= WB_st_s;
+    RF_WR_out <= RF_WR_s;
+
+    edit_process: process(clk, ID2OR_WR, reset_wr) is
+    begin
+        if(falling_edge(clk) and ID2OR_WR = '1') then
+            opcode_s <= opcode_in;
+            instr_11_9_s <= instr_11_9_in;
+            instr_8_6_s <= instr_8_6_in;
+            instr_5_3_s <= instr_5_3_in;
+			instr_2_0_s <= instr_2_0_in;
+            instr_5_0_s <= instr_5_0_in;
+            instr_8_0_s <= instr_8_0_in;
+            enc_addr_s <= enc_addr_in;
+            enc_input_s <= enc_input_in;
+            LS6_s <= LS6_in;
+            LS9_s <= LS9_in;
+            PC_s <= PC_in;
+            PC2_s <= PC2_in;
+            OR_st_s <= OR_st_in;
+            EX_st_s <= EX_st_in;
+            MA_st_s <= MA_st_in;
+            WB_st_s <= WB_st_in;
+            RF_WR_s <= RF_WR_in;
+		end if;
+		if (falling_edge(clk) and reset_wr = '1') then
+            MA_st_s(2) <= '0'; --DATA_MEM_WR
+            RF_WR_s <= '0';
+        end if; 
+    end process edit_process;
+end architecture bhv2;
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------NEW COMPONENT-----------------------------------------
+--------------------------------------------------------------DON'T BLINK-------------------------------------------
+--------------------------------------------------------------LEST YOU MISS-----------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+entity MA2WBreg is
+	port (
+			---------------------------------inputs
+			clk, MA2WB_WR: in std_logic;
+            reset_wr: in std_logic;
+            opcode_in: in std_logic_vector(5 downto 0);
+            instr_11_9_in : in std_logic_vector(2 downto 0);
+            MEM_output_in: in std_logic_vector(15 downto 0);
+            E9_output_in: in std_logic_vector(15 downto 0);
+            enc_addr_in : in std_logic_vector(2 downto 0); -- output from custom encoder
+            PC2_in : in std_logic_vector(15 downto 0);            
+            WB_st_in : in std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            RF_WR_in: in std_logic;
+            ---------------------------------outputs
+            opcode_out: out std_logic_vector(5 downto 0);
+            instr_11_9_out : out std_logic_vector(2 downto 0);
+            MEM_output_out: out std_logic_vector(15 downto 0);
+            E9_output_out: out std_logic_vector(15 downto 0);
+            enc_addr_out : out std_logic_vector(2 downto 0); -- output from custom encoder
+            PC2_out : out std_logic_vector(15 downto 0);
+            WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            RF_WR_out: out std_logic
+    );
+end entity MA2WBreg;
+
+architecture bhv5 of MA2WBreg is
+	signal opcode_s: std_logic_vector(5 downto 0) := "000000";
+    signal instr_11_9_s, enc_addr_s: std_logic_vector(2 downto 0) := "000";
+    signal PC2_s, E9_output_s, MEM_output_s: std_logic_vector(15 downto 0) := "0000000000000000";
+    signal WB_st_s: std_logic_vector(1 downto 0) := "00";
+    signal RF_WR_S: std_logic := '0';
+begin
+
+    opcode_out <= opcode_s;
+    instr_11_9_out <= instr_11_9_s;
+    E9_output_out <= E9_output_s;
+    MEM_output_out <= MEM_output_s;
+    enc_addr_out <= enc_addr_s;
+    PC2_out <= PC2_s;
+    WB_st_out <= WB_st_s;
+    RF_WR_out <= RF_WR_s;
+
+    edit_process: process(clk, MA2WB_WR, reset_wr) is
+    begin
+        if(falling_edge(clk) and MA2WB_WR = '1') then
+            opcode_s <= opcode_in;
+            instr_11_9_s <= instr_11_9_in;
+            E9_output_s <= E9_output_in;
+            MEM_output_s <= MEM_output_in;
+            enc_addr_s <= enc_addr_in;
+            PC2_s <= PC2_in;
+            WB_st_s <= WB_st_in;
+            RF_WR_s <= RF_WR_in;
+		end if;
+		if (falling_edge(clk) and reset_wr = '1') then
+            RF_WR_s <= '0';
+        end if; 
+    end process edit_process;
+end architecture bhv5;
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------NEW COMPONENT-----------------------------------------
+--------------------------------------------------------------DON'T BLINK-------------------------------------------
+--------------------------------------------------------------LEST YOU MISS-----------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+entity OR2EXreg is
+	port (
+			---------------------------------inputs
+			   clk, OR2EX_WR: in std_logic;
+            reset_wr: in std_logic;
+            opcode_in: in std_logic_vector(5 downto 0);
+            instr_11_9_in : in std_logic_vector(2 downto 0);
+            E9_output_in: in std_logic_vector(15 downto 0);
+            SE6_output_in: in std_logic_vector(15 downto 0);
+            D1_output_in: in std_logic_vector(15 downto 0);
+            D2_output_in: in std_logic_vector(15 downto 0); 
+            enc_addr_in : in std_logic_vector(2 downto 0); -- output from custom encoder
+            LS6_in : in std_logic_vector(15 downto 0); -- output from leftshifter 6bit
+            LS9_in : in std_logic_vector(15 downto 0); -- output from leftshifter 9bit
+            PC_in : in std_logic_vector(15 downto 0);
+            PC2_in : in std_logic_vector(15 downto 0);
+            EX_st_in : in std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
+            MA_st_in : in std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
+            WB_st_in : in std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            RF_WR_in: in std_logic;
+            ---------------------------------outputs
+            opcode_out: out std_logic_vector(5 downto 0);
+            E9_output_out: out std_logic_vector(15 downto 0);
+            instr_11_9_out : out std_logic_vector(2 downto 0);
+            SE6_output_out: out std_logic_vector(15 downto 0);
+            D1_output_out: out std_logic_vector(15 downto 0);
+            D2_output_out: out std_logic_vector(15 downto 0); 
+            enc_addr_out : out std_logic_vector(2 downto 0); -- output from custom encoder
+            LS6_out : out std_logic_vector(15 downto 0); -- output from leftshifter 6bit
+            LS9_out : out std_logic_vector(15 downto 0); -- output from leftshifter 9bit
+            PC_out : out std_logic_vector(15 downto 0);
+            PC2_out : out std_logic_vector(15 downto 0);
+            EX_st_out : out std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
+            MA_st_out : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
+            WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            RF_WR_out: out std_logic
+    );
+end entity OR2EXreg;
+
+architecture bhv3 of OR2EXreg is
+	signal opcode_s: std_logic_vector(5 downto 0) := "000000";
+    signal instr_11_9_s, enc_addr_s: std_logic_vector(2 downto 0) := "000";
+    signal LS6_s, LS9_s, PC_s, PC2_s, E9_output_s, SE6_output_s, D1_output_s, D2_output_s: std_logic_vector(15 downto 0) := "0000000000000000";
+    signal EX_st_s: std_logic_vector(10 downto 0) := "00000000000";
+    signal MA_st_s: std_logic_vector(3 downto 0) := "0000";
+    signal WB_st_s: std_logic_vector(1 downto 0) := "00";
+    signal RF_WR_S: std_logic := '0';
+begin
+
+    opcode_out <= opcode_s;
+    instr_11_9_out <= instr_11_9_s;
+    E9_output_out <= E9_output_s;
+    SE6_output_out <= SE6_output_s;
+    D1_output_out <= D1_output_s;
+    D2_output_out <= D2_output_s;
+    enc_addr_out <= enc_addr_s;
+    LS6_out <= LS6_s;
+    LS9_out <= LS9_s;
+    PC_out <= PC_s;
+    PC2_out <= PC2_s;
+    EX_st_out <= EX_st_s;
+    MA_st_out <= MA_st_s;
+    WB_st_out <= WB_st_s;
+    RF_WR_out <= RF_WR_s;
+
+    edit_process: process(clk, OR2EX_WR, reset_wr) is
+    begin
+        if(falling_edge(clk) and OR2EX_WR = '1') then
+            opcode_s <= opcode_in;
+            instr_11_9_s <= instr_11_9_in;
+            E9_output_s <= E9_output_in;
+            SE6_output_s <= SE6_output_in;
+            D1_output_s <= D1_output_in;
+            D2_output_s <= D2_output_in;
+            enc_addr_s <= enc_addr_in;
+            LS6_s <= LS6_in;
+            LS9_s <= LS9_in;
+            PC_s <= PC_in;
+            PC2_s <= PC2_in;
+            EX_st_s <= EX_st_in;
+            MA_st_s <= MA_st_in;
+            WB_st_s <= WB_st_in;
+            RF_WR_s <= RF_WR_in;
+		end if;
+		if (falling_edge(clk) and reset_wr = '1') then
+            MA_st_s(2) <= '0'; --DATA_MEM_WR
+            RF_WR_s <= '0';
+        end if; 
+    end process edit_process;
+end architecture bhv3;

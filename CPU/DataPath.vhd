@@ -47,10 +47,10 @@ architecture trivial of DataPath is
 		use entity work.bb_cwr_zwr(blackboxed3);
 		
 	for all: bb_branching
-		use entity work.bb_cwr_zwr(blackboxed4);
+		use entity work.bb_branching(blackboxed4);
 		
 	for all: bb_pc_mux
-		use entity work.bb_cwr_zwr(blackboxed5);
+		use entity work.bb_pc_mux(blackboxed5);
 		
 	for all: Lshifter6
 		use entity work.Leftshifter(yes);
@@ -210,7 +210,7 @@ architecture trivial of DataPath is
 			port map(adder2_ain, adder2_bin, EX_adder2_out);
 			
 		CZBlackBox: component bb_cwr_zwr
-			port map(ex2ma_c, ex2ma_z, EX_opcode, c_wr, z_wr, ex_rf_wr_and_a);
+			port map(EX_RF_WR, ,ex2ma_c, ex2ma_z, EX_opcode, c_wr, z_wr, ex_rf_wr_and_a);
 			
 		BranchingBlackBox: component bb_branching
 			port map(c_o, z_o, EX_opcode, pc_mux_branch, if2id_wr_and_a, id2or_reset_all_wr, or2ex_reset_all_wr);
@@ -220,6 +220,57 @@ architecture trivial of DataPath is
 			
 		WB_MUX: component mux_4_1
 			port map(WB_default, WB_default, WB_adder1_out, WB_E9out, WB_MUX_1, WB_MUX_1, RF_writeback);
+			
+		ID2OR: component ID2ORreg
+			port map(clk, '1', reset, ID_opcode, ID_11_9, ID_8_6, ID_5_3, ID_2_0, ID_5_0, ID_8_0, ID_encoded, updated_imm, ID_LS6out, ID_LS9out, ID_IM_in, ID_adder1_out, OR_st, EX_st, MA_st, WB_st, ID_RF_veto, );
+			
+		---------------------------------inputs
+			clk, ID2OR_WR: in std_logic;
+            reset_wr: in std_logic;
+            opcode_in: in std_logic_vector(5 downto 0);
+            instr_11_9_in : in std_logic_vector(2 downto 0); 
+            instr_8_6_in : in std_logic_vector(2 downto 0); 
+            instr_5_3_in : in std_logic_vector(2 downto 0); 
+            instr_5_0_in : in std_logic_vector(5 downto 0); 
+            instr_8_0_in : in std_logic_vector(8 downto 0); 
+            enc_addr_in : in std_logic_vector(2 downto 0); -- output from custom encoder
+            enc_input_in : in std_logic_vector(7 downto 0); -- input to custom encoder
+            LS6_in : in std_logic_vector(15 downto 0); -- output from leftshifter 6bit
+            LS9_in : in std_logic_vector(15 downto 0); -- output from leftshifter 9bit
+            PC_in : in std_logic_vector(15 downto 0);
+            PC2_in : in std_logic_vector(15 downto 0);
+            OR_st_in : in std_logic_vector(2 downto 0); -- OR2EX_WR, MUX_RF_A1, MUX_RF_A2
+            EX_st_in : in std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
+            MA_st_in : in std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
+            WB_st_in : in std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            RF_WR_in: in std_logic;
+            ---------------------------------outputs
+            opcode_out: out std_logic_vector(5 downto 0);
+            instr_11_9_out : out std_logic_vector(2 downto 0); --will go to RF
+            instr_8_6_out : out std_logic_vector(2 downto 0); --will go to RF
+            instr_5_3_out : out std_logic_vector(2 downto 0); -- will go to RF
+            instr_5_0_out : out std_logic_vector(5 downto 0); -- will go to SE6
+            instr_8_0_out : out std_logic_vector(8 downto 0); -- will go to E9
+            enc_addr_out : out std_logic_vector(2 downto 0); -- output from custom encoder
+            enc_input_out : out std_logic_vector(7 downto 0); -- input to custom encoder
+            LS6_out : out std_logic_vector(15 downto 0); -- output from leftshifter 6bit
+            LS9_out : out std_logic_vector(15 downto 0); -- output from leftshifter 9bit
+            PC_out : out std_logic_vector(15 downto 0);
+            PC2_out : out std_logic_vector(15 downto 0);
+            OR_st_out : out std_logic_vector(2 downto 0); -- OR2EX_WR, MUX_RF_A1, MUX_RF_A2
+            EX_st_out : out std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
+            MA_st_out : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
+            WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+			
+		OR2EX: component OR2EXreg
+			port map();
+		
+		EX2MA: component EX2MAreg
+			port map();
+		
+		MA2WB: component MA2WBreg
+			port map();
+			
 		
 end entity CZreg;
 			
