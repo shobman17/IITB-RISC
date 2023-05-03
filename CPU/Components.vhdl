@@ -1,3 +1,4 @@
+
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -86,15 +87,15 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity extender_nine is
-	port (in1, in2, in3: in std_logic_vector(2 downto 0);
-			output: out std_logic_vector(15 downto 0));
+	port (input1: in std_logic_vector(8 downto 0);
+			output1: out std_logic_vector(15 downto 0));
 end entity extender_nine;
 
 architecture major_extending of extender_nine is
 begin
 	--new_process: process(input)
 	--begin
-	output <= "0000000" & in1 & in2 & in3;
+	output1 <= "0000000" & input1;
 	--end process;
 end major_extending;
 
@@ -249,8 +250,8 @@ entity bb_cwr_zwr is
 			c_wr, z_wr : out std_logic);
 end entity bb_cwr_zwr;
 =======
-			c_wr, z_wr, ex_rf_wr_and_a : out std_logic);
-end entity bbD3;
+			c_wr, z_wr, rf_wr_and_a : out std_logic);
+end entity bb_cwr_zwr;
 >>>>>>> 321aa7e9c243498c59ba5536f63a0783011417b9
 
 architecture blackboxed3 of bb_cwr_zwr is
@@ -1000,7 +1001,7 @@ use ieee.numeric_std.all;
 library Work;
 entity PC is
 	port (
-			input,clk, PC_WR: in std_logic;
+			input, clk, PC_WR: in std_logic;
 			output: out std_logic);
 end entity alpha;
 
@@ -1578,8 +1579,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity signed_extender is
-	port (in1, in2: in std_logic_vector(5 downto 0);
-			output: out std_logic_vector(15 downto 0));
+	port (input1: in std_logic_vector(5 downto 0);
+			output1: out std_logic_vector(15 downto 0));
 end entity signed_extender;
 
 architecture ext of signed_extender is
@@ -1587,9 +1588,9 @@ begin
 	conv_process: process(input)
 	begin
 		if (input(5) = '0') then
-			output <= "0000000000" & in1 & in2;
+			output1 <= "0000000000" & input1;
 		else 
-			output <= "1111111111" & in1 & in2;
+			output1 <= "1111111111" & input1;
 		end if;
 	end process;
 end ext;
@@ -1700,6 +1701,7 @@ entity ID2ORreg is
             EX_st_in : in std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
             MA_st_in : in std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
             WB_st_in : in std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            ID_alpha : in std_logic;
             RF_WR_in: in std_logic;
             ---------------------------------outputs
             opcode_out: out std_logic_vector(5 downto 0);
@@ -1718,6 +1720,7 @@ entity ID2ORreg is
             EX_st_out : out std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
             MA_st_out : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
             WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            OR_alpha : out std_logic;
             RF_WR_out: out std_logic
     );
 end entity ID2ORreg;
@@ -1732,6 +1735,7 @@ architecture bhv2 of ID2ORreg is
     signal MA_st_s: std_logic_vector(3 downto 0) := "0000";
     signal WB_st_s: std_logic_vector(1 downto 0) := "00";
     signal RF_WR_S: std_logic := '0';
+    signal alpha_s: std_logic := '0';
 begin
 
     opcode_out <= opcode_s;
@@ -1752,7 +1756,7 @@ begin
     MA_st_out <= MA_st_s;
     WB_st_out <= WB_st_s;
     RF_WR_out <= RF_WR_s;
-
+    OR_alpha <= alpha_s;
     edit_process: process(clk, ID2OR_WR, reset_wr) is
     begin
         if(falling_edge(clk) and ID2OR_WR = '1') then
@@ -1774,6 +1778,7 @@ begin
             MA_st_s <= MA_st_in;
             WB_st_s <= WB_st_in;
             RF_WR_s <= RF_WR_in;
+            alpha_s <= ID_alpha;
 		end if;
 		if (falling_edge(clk) and reset_wr = '1') then
             MA_st_s(2) <= '0'; --DATA_MEM_WR
@@ -1801,6 +1806,7 @@ entity MA2WBreg is
             enc_addr_in : in std_logic_vector(2 downto 0); -- output from custom encoder
             PC2_in : in std_logic_vector(15 downto 0);            
             WB_st_in : in std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            EX_c, EX_z: in std_logic;
             RF_WR_in: in std_logic;
             ---------------------------------outputs
             opcode_out: out std_logic_vector(5 downto 0);
@@ -1810,6 +1816,7 @@ entity MA2WBreg is
             --enc_addr_out : out std_logic_vector(2 downto 0); -- output from custom encoder
             PC2_out : out std_logic_vector(15 downto 0);
             WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            MA_c, MA_z: in std_logic;
             RF_WR_out: out std_logic
     );
 end entity MA2WBreg;
@@ -1820,6 +1827,7 @@ architecture bhv5 of MA2WBreg is
     signal PC2_s, E9_output_s, MEM_output_s: std_logic_vector(15 downto 0) := "0000000000000000";
     signal WB_st_s: std_logic_vector(1 downto 0) := "00";
     signal RF_WR_S: std_logic := '0';
+    signal c_s, z_s: std_logic := '0';
 begin
 
     opcode_out <= opcode_s;
@@ -1829,7 +1837,8 @@ begin
     PC2_out <= PC2_s;
     WB_st_out <= WB_st_s;
     RF_WR_out <= RF_WR_s;
-
+    MA_c<= c_s;
+    MA_z <= z_s;
     edit_process: process(clk, MA2WB_WR, reset_wr) is
     begin
 		
@@ -1842,11 +1851,13 @@ begin
             PC2_s <= PC2_in;
             WB_st_s <= WB_st_in;
             RF_WR_s <= RF_WR_in;
+            c_s<=EX_c;
+            z_s<=EX_z;
 		end if;
 		if (falling_edge(clk) and reset_wr = '1') then
             RF_WR_s <= '0';
         end if;
-		if(opcode_s = "011000" or opcode_s = "011001" or opcode_s = "011010" or opcode_s = "011011" or opcode_s = "011100" or opcode_s = "011101" or opcode_s = "011110" or opcode_s = "011111") then
+		if(opcode_s = "011000" or opcode_s = "011001" or opcode_s = "011010" or opcode_s = "011011") then --If it is LM/SM, then we go for the encoder wala A3
 			correct_rf_addr<=enc_addr_s;
 		else
 			correct_rf_addr<=instr_11_9_s;
@@ -1865,7 +1876,7 @@ use ieee.numeric_std.all;
 entity OR2EXreg is
 	port (
 			---------------------------------inputs
-			   clk, OR2EX_WR: in std_logic;
+			clk, OR2EX_WR: in std_logic;
             reset_wr: in std_logic;
             opcode_in: in std_logic_vector(5 downto 0);
             instr_11_9_in : in std_logic_vector(2 downto 0);
@@ -1881,6 +1892,7 @@ entity OR2EXreg is
             EX_st_in : in std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
             MA_st_in : in std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
             WB_st_in : in std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            --c, z: in std_logic;
             RF_WR_in: in std_logic;
             ---------------------------------outputs
             opcode_out: out std_logic_vector(5 downto 0);
@@ -1897,6 +1909,7 @@ entity OR2EXreg is
             EX_st_out : out std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
             MA_st_out : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
             WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+            --EX_c, EX_z : out std_logic;
             RF_WR_out: out std_logic
     );
 end entity OR2EXreg;
@@ -1909,6 +1922,7 @@ architecture bhv3 of OR2EXreg is
     signal MA_st_s: std_logic_vector(3 downto 0) := "0000";
     signal WB_st_s: std_logic_vector(1 downto 0) := "00";
     signal RF_WR_S: std_logic := '0';
+    --signal c_s, z_s: std_logic := '0';
 begin
 
     opcode_out <= opcode_s;
@@ -1926,7 +1940,8 @@ begin
     MA_st_out <= MA_st_s;
     WB_st_out <= WB_st_s;
     RF_WR_out <= RF_WR_s;
-
+    --EX_c<= c_s;
+    --EX_z <= z_s;
     edit_process: process(clk, OR2EX_WR, reset_wr) is
     begin
         if(falling_edge(clk) and OR2EX_WR = '1') then
@@ -1945,6 +1960,8 @@ begin
             MA_st_s <= MA_st_in;
             WB_st_s <= WB_st_in;
             RF_WR_s <= RF_WR_in;
+            --c_s<=c;
+            --z_s<=z;
 		end if;
 		if (falling_edge(clk) and reset_wr = '1') then
             MA_st_s(2) <= '0'; --DATA_MEM_WR
