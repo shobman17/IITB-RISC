@@ -93,6 +93,18 @@ architecture trivial of DataPath is
 	
 	for all: prog_reg
 		use entity work.prog_reg(pr);
+		
+	for all: EX2MAreg
+		use entity work.EX2MAreg(bhv4);
+	
+	for all: ID2ORreg
+		use entity work.ID2ORreg(bhv2);
+	
+	for all: MA2WBreg
+		use entity work.MA2WBreg(bhv5);
+	
+	for all: OR2EXreg
+		use entity work.OR2EXreg(bhv3);
 	
 	signal IF_IM_in, update_PC, IF_IM_out, ID_IM_in, EX_D1_MUX_out, EX_adder2_out, Prediction, IF_adder1_out, ID_adder1_out, OR_adder1_out, MA_adder1_out, WB_adder1_out, : std_logic_vector(15 downto 0):=(others=>'0');
 	signal clk, PC_WR, BP_control: std_logic;
@@ -222,7 +234,7 @@ architecture trivial of DataPath is
 			port map(WB_default, WB_default, WB_adder1_out, WB_E9out, WB_MUX_1, WB_MUX_1, RF_writeback);
 			
 		ID2OR: component ID2ORreg
-			port map(clk, '1', reset, ID_opcode, ID_11_9, ID_8_6, ID_5_3, ID_2_0, ID_5_0, ID_8_0, ID_encoded, updated_imm, ID_LS6out, ID_LS9out, ID_IM_in, ID_adder1_out, OR_st, EX_st, MA_st, WB_st, ID_RF_veto, );
+			port map(clk, '1', reset, ID_opcode, ID_11_9, ID_8_6, ID_5_3, ID_2_0, ID_5_0, ID_8_0, ID_encoded, updated_imm, ID_LS6out, ID_LS9out, ID_IM_in, ID_adder1_out, OR_st, EX_st, MA_st, WB_st, ID_RF_veto );
 			
 		---------------------------------inputs
 			clk, ID2OR_WR: in std_logic;
