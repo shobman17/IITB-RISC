@@ -351,10 +351,10 @@ architecture blackboxed4 of bb_branching is
 	begin
 		edit_process: process(c_o, z_o, opcode)
 		begin
-			if ((opcode = ("100000" or "100001" or "100010" or "100011") and c_o ='1' and z_o ='1') or 
-			    (opcode = ("100100" or "100101" or "100110" or "100111") and c_o = '0' and z_o ='0') or 
-				 (c_o = '1' and z_o ='1') or (opcode =("110000" or "110001" or "110010" or "110011")) or
-				 (opcode =("111100" or "111101" or "111110" or "111111"))) then 
+			if (((opcode = "100000" or opcode = "100001" or opcode ="100010" or opcode ="100011") and c_o ='1' and z_o ='1') or 
+			    (opcode = "100100" or opcode ="100101" or opcode ="100110" or opcode ="100111" and c_o = '0' and z_o ='0') or 
+				 (c_o = '1' and z_o ='1') or (opcode ="110000" or opcode ="110001" or opcode ="110010" or opcode ="110011") or
+				 (opcode ="111100" or opcode ="111101" or opcode ="111110" or opcode ="111111")) then 
 				 
 			     pc_mux_branch <= '1';
 				  if2id_wr_and_a <= '0';
