@@ -1804,10 +1804,10 @@ entity MA2WBreg is
             RF_WR_in: in std_logic;
             ---------------------------------outputs
             opcode_out: out std_logic_vector(5 downto 0);
-            instr_11_9_out : out std_logic_vector(2 downto 0);
+            correct_rf_addr : out std_logic_vector(2 downto 0);
             MEM_output_out: out std_logic_vector(15 downto 0);
             E9_output_out: out std_logic_vector(15 downto 0);
-            enc_addr_out : out std_logic_vector(2 downto 0); -- output from custom encoder
+            --enc_addr_out : out std_logic_vector(2 downto 0); -- output from custom encoder
             PC2_out : out std_logic_vector(15 downto 0);
             WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
             RF_WR_out: out std_logic
@@ -1823,16 +1823,16 @@ architecture bhv5 of MA2WBreg is
 begin
 
     opcode_out <= opcode_s;
-    instr_11_9_out <= instr_11_9_s;
+    --correct_rf_addr <= instr_11_9_s;
     E9_output_out <= E9_output_s;
     MEM_output_out <= MEM_output_s;
-    enc_addr_out <= enc_addr_s;
     PC2_out <= PC2_s;
     WB_st_out <= WB_st_s;
     RF_WR_out <= RF_WR_s;
 
     edit_process: process(clk, MA2WB_WR, reset_wr) is
     begin
+		
         if(falling_edge(clk) and MA2WB_WR = '1') then
             opcode_s <= opcode_in;
             instr_11_9_s <= instr_11_9_in;
@@ -1845,9 +1845,15 @@ begin
 		end if;
 		if (falling_edge(clk) and reset_wr = '1') then
             RF_WR_s <= '0';
-        end if; 
+        end if;
+		if(opcode_s = "011000" or opcode_s = "011001" or opcode_s = "011010" or opcode_s = "011011" or opcode_s = "011100" or opcode_s = "011101" or opcode_s = "011110" or opcode_s = "011111") then
+			correct_rf_addr<=enc_addr_s;
+		else
+			correct_rf_addr<=instr_11_9_s;
+		end if;
     end process edit_process;
 end architecture bhv5;
+
 --------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------NEW COMPONENT-----------------------------------------
 --------------------------------------------------------------DON'T BLINK-------------------------------------------
