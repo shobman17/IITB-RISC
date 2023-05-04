@@ -106,14 +106,23 @@ architecture trivial of DataPath is
 	for all: OR2EXreg
 		use entity work.OR2EXreg(bhv3);
 	
-	signal IF_IM_in, EX_IM_in, update_PC, IF_IM_out, EX_D1_MUX_out, EX_adder2_out, IF_BP_pred, IF_adder1_out,, OR_adder1_out, MA_adder1_out, WB_adder1_out, : std_logic_vector(15 downto 0):=(others=>'0');
+	signal IF_IM_in, EX_IM_in, update_PC, IF_IM_out, EX_D1_MUX_out, EX_adder2_out, IF_BP_pred, IF_adder1_out, OR_adder1_out, EX_adder1_out,  MA_adder1_out, WB_adder1_out, : std_logic_vector(15 downto 0):=(others=>'0');
 	signal clk, PC_WR, BP_control, PC_MUX_branch, hb_in, BR_WR: std_logic;
+	signal Mem_D1, OR_E9out, EX_E9out, MA_E9out, WB_E9out, WB_default, MA_out, Mem_D1, OR_SE6out, MA_SE6out, EX_D2_MUX_out : std_logic_vector(15 downto 0);
+	signal ID_8_0, ID_LS9out, OR_LS9out, EX_LS9out : std_logic_vector(8 downto 0);
+	signal ID_5_0, ID_LS6out, OR_LS6out, EX_LS6out : std_logic_vector(5 downto 0);
+	signal ID_11_9, OR_11_9, ID_encoded, OR_encoded, A1_in, A2_in: std_logic_vector(2 downto 0);
+	signal ID_8_6, OR_8_6 : std_logic_vector(2 downto 0);
+	signal ID_5_3, OR_5_3 : std_logic_vector(2 downto 0);
+	signal ID_2_0, OR_2_0, ID_encoded, OR_encoded: std_logic(2 downto 0);
+	signal updated_imm, subtractor_in : std_logic_vector(8 downto )
 
 	signal IF2ID_WR: std_logic;
 
-	signal ID_IM_out, ID_IM_in, ID_adder1_out: std_logic_vector(15 downto 0):=(others=>'0');	
-	signal if2id_wr_and_a, singular_one, alpha_update, ID_alpha, if_LMSM: std_logic;
---	signal alu_a, alu_b, alu_out, s1_0, s1_10, s2_0, s2_1, s3_0, s3_1, s4_0, s4_1, s5_0, s5_1, d1, d2, d3, e8_out, se6_out, L7_out, m_a, m_in, m_out: std_logic_vector(15 downto 0):=(others=>'0');
+	signal ID_IM_out, ID_IM_in, OR_IM_in, EX_IM_in, IF_IM_in, ID_adder1_out: std_logic_vector(15 downto 0):=(others=>'0');	
+	signal if2id_wr_and_a, singular_one, alpha_update, ID_alpha, OR_alpha, if_LMSM: std_logic;
+    
+	--signal alu_a, alu_b, alu_out, s1_0, s1_10, s2_0, s2_1, s3_0, s3_1, s4_0, s4_1, s5_0, s5_1, d1, d2, d3, e8_out, se6_out, L7_out, m_a, m_in, m_out: std_logic_vector(15 downto 0):=(others=>'0');
 --	signal a1, a2, a3, s6_0, s6_1, s1_7, s1_6, s1_5, enc_out: std_logic_vector(2 downto 0):=(others=>'0');
 --	signal alu_ctrl: std_logic_vector(1 downto 0);
 --	signal s1_1: std_logic_vector(8 downto 0);
@@ -128,25 +137,28 @@ architecture trivial of DataPath is
 	begin
 		PCyes: component PC
 			port map(update_PC, clk, PC_WR, IF_IM_in);
+
+		PC_WR_AND: component AND_2
+			port map(bb_PC_wr_suggestion, singular_one, PC_WR);
 		
 		InstructionMemory: component Memory_Code
 			port map(clk, IF_IM_in, IF_IM_out);
 			
 		PC_MUX_Blackbox: component bb_pc_mux
-			port map(PC_MUX_branch, BP_control, EX_opcode, PC_MUX_ctrl);
+			port map(PC_MUX_branch, BP_control, EX_opcode, A3, PC_MUX_ctrl, bb_PC_wr_suggestion);
 			
 		PC_MUX: component mux_4_1
 			port map(IF_adder1_out, EX_adder2_out, EX_D1_MUX_out, IF_BP_pred, PC_MUX_ctrl(0), PC_MUX_ctrl(1), update_PC);
 			
 		BranchPredictor: component branch_predictor
-			port map(IF_IM_in, EX_IM_in, EX_adder2_out, EX_adder1_out, ,  update_PC, BR_WR, hb_in, IF_BP_pred, BP_control);
-		
-		in_IF, in_EXE, in_pred, in_EXE2: in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
-		opcode_IF, opcode_EXE: in std_logic_vector(5 downto 0);
-		hb_in: in std_logic; -- input for history bit to write to this table
-		out_IF, out_EXE: out std_logic_vector(15 downto 0); -- prediction output or correction to branch
-		branch: out std_logic; -- whether to branch or not
-		reset_wr: out std_logic); -- whether prediction was wrong or not
+			port map(IF_IM_in, EX_IM_in, EX_adder2_out, EX_adder1_out, ID_opcode, EX_opcode, hb_in, IF_BP_pred, BP_control, reset_wr);
+		--Fuck bhai ye kya banaya hai
+		-- in_IF, in_EXE, in_pred, in_EXE2: in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
+		-- opcode_IF, opcode_EXE: in std_logic_vector(5 downto 0);
+		-- hb_in: in std_logic; -- input for history bit to write to this table
+		-- out_IF, out_EXE: out std_logic_vector(15 downto 0); -- prediction output or correction to branch
+		-- branch: out std_logic; -- whether to branch or not
+		-- reset_wr: out std_logic); -- whether prediction was wrong or not
 
 		adder1: component ADDER
 			port map(IF_IM_in, "0000000000000010", IF_adder1_out);
@@ -241,6 +253,9 @@ architecture trivial of DataPath is
 		BranchingBlackBox: component bb_branching
 			port map(c_o, z_o, EX_opcode, PC_MUX_branch, if2id_wr_and_a, id2or_reset_all_wr, or2ex_reset_all_wr);
 
+		A3_MUX: component mux_2_1
+			port map(WB_11_9, WB_encoded, (not WB_opcode(5)) and WB_opcode(4) and WB_opcode(3) and (not WB_opcode(2)), A3);
+
 		ID2OR_reset_WR_OR: component OR_2
 			port map(reset, id2or_reset_all_wr, ID2OR_reset_WR);
 
@@ -267,6 +282,6 @@ architecture trivial of DataPath is
 
 		MA2WB: component MA2WBreg
 			port map(clk, '1', reset, MA_opcode, MA_11_9, MA_out, MA_E9out, MA_encoded, MA_adder1_out, MA_control_signals_WB, MA_RF_WR,
-			 WB_opcode, A3, WB_default, WB_E9out, WB_adder1_out, WB_MUX, WB_RF_WR);
+			 WB_opcode, WB_11_9, WB_default, WB_E9out, WB_encoded, WB_adder1_out, WB_MUX, WB_RF_WR);
 
 end architecture trivial;

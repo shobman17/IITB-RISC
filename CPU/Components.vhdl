@@ -309,22 +309,30 @@ library Work;
 entity bb_pc_mux is
 	port (
 			pc_mux_branch, bp_control:in std_logic;
-		   op2ex_opcode : in std_logic_vector(3 downto 0);
-			pc_mux_control_bits : out std_logic_vector(1 downto 0));
+		   op2ex_opcode : in std_logic_vector(5 downto 0);
+		   A3: in std_logic_vector(2 downto 0);
+			pc_mux_control_bits : out std_logic_vector(1 downto 0);
+			pc_wr: out std_logic);
 end entity bb_pc_mux;
 
 architecture blackboxed5 of bb_pc_mux is
 	begin
-		edit_process: process(pc_mux_branch, bp_control,op2ex_opcode )
+		edit_process: process(pc_mux_branch, bp_control, op2ex_opcode, A3)
 		begin
-			if (pc_mux_branch = '1') then 
+			if (A3 = "000") then
+				pc_wr <= '0';
+			elsif (pc_mux_branch = '1') then 
 				  pc_mux_control_bits <= "01";
-			elsif (op2ex_opcode = "1101") then 
+				  pc_wr<='1';
+			elsif (op2ex_opcode(5 downto 2) = "1101") then 
 				  pc_mux_control_bits <= "10";
+				  pc_wr<='1';
 			elsif (bp_control = '1') then 
 				  pc_mux_control_bits <= "11";
+				  pc_wr<='1';
 			else 
 				  pc_mux_control_bits <= "00";
+				  pc_wr<='1';
 				
 			end if;
 			
@@ -1001,8 +1009,9 @@ use ieee.numeric_std.all;
 library Work;
 entity PC is
 	port (
-			input, clk, PC_WR: in std_logic;
-			output: out std_logic);
+			input:in std_logic_vector(15 downto 0);
+			clk, PC_WR, reset: in std_logic;
+			output: out std_logic_vector(15 downto 0));
 end entity alpha;
 
 architecture update of PC is 
@@ -1012,6 +1021,9 @@ begin
 	begin
 		if(falling_edge(clk) and PC_WR = 1) then
 			alpha_content <= input;
+		end if;
+		if(reset = '1') then
+			alpha_content <= "0000000000000000";
 		end if;
 	end process write_alpha;
 	
@@ -1284,14 +1296,21 @@ entity branch_predictor is
 	generic (
 		addrSize    : integer   := 16;
 		tableSize   : integer   := 64);
-	port(
+	-- port(
 		in_IF, in_EXE, in_pred, in_EXE2: in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
 		opcode_IF, opcode_EXE: in std_logic_vector(5 downto 0);
 		hb_in: in std_logic; -- input for history bit to write to this table
 		out_IF, out_EXE: out std_logic_vector(15 downto 0); -- prediction output or correction to branch
 		branch: out std_logic; -- whether to branch or not
 		reset_wr: out std_logic); -- whether prediction was wrong or not
-end branch_predictor;
+	port(
+		IF_IM_in, EX_IM_in, update_PC, : in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
+		EX_opcode: in std_logic_vector(5 downto 0);
+		hb_in: in std_logic; -- input for history bit to write to this table
+		Prediction: out std_logic_vector(15 downto 0); -- prediction output or correction to branch
+		BP_control: out std_logic -- whether to branch or not
+		); -- whether prediction was wrong or not
+		end branch_predictor;
 
 architecture predict of branch_predictor is
 	
@@ -1376,7 +1395,8 @@ begin
 		end if;
 	end process IF_proc;
 			
-end predict;	
+end predict;
+
 
 --------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------NEW COMPONENT-----------------------------------------
