@@ -1,65 +1,101 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 entity branch_predictor is 
 	generic (
 		addrSize    : integer   := 16;
 		tableSize   : integer   := 64);
 	port(
-		in_IF, in_EXE, in_pred: in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
-		BR_WR: in std_logic; -- if BR_WR is true then we update the LUT else we just read
+		in_IF, in_EXE, in_pred, in_EXE2: in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
+		opcode_IF, opcode_EXE: in std_logic_vector(5 downto 0);
 		hb_in: in std_logic; -- input for history bit to write to this table
-		out_pred: out std_logic_vector(15 downto 0);
-		branch: out std_logic); -- whether to branch ot not
+		out_IF, out_EXE: out std_logic_vector(15 downto 0); -- prediction output or correction to branch
+		branch: out std_logic; -- whether to branch or not
+		reset_wr: out std_logic); -- whether prediction was wrong or not
 end branch_predictor;
 
 architecture predict of branch_predictor is
 	
-	signal inputTable: std_logic_vector(addrSize*tableSize-1 downto 0) := (others =>'0');
-	signal historyBit: std_logic_vector(tableSize - 1 downto 0) := (others => '0');
-	signal predTable : std_logic_vector(addrSize*tableSize-1 downto 0) := (others =>'0');
-	--variable head    : integer := 0; -- where to write a new entry	
-	
+	type table is array(tableSize-1 downto 0) of std_logic_vector(addrSize-1 downto 0);
+	signal inputTable: table := (others =>"0000000000000000");
+	signal historyBit: std_logic_vector(tableSize-1 downto 0) := (others => '0');
+	signal predTable : table := (others =>"0000000000000000");
+	shared variable head: natural range 63 downto 0 := tableSize-1; -- where to write a new entry	
+	 
 begin
-	out_pred <= "0000000000000000";
-	branch <= '0';
---	readTable: process(in_IF) is
---		variable found: std_logic := '0';
---	begin
---		if(in_IF(15) and ((not in_IF(13) and not in_IF(12)) or (not in_IF(14) and in_IF(12)))) then -- check if opcode is of branching instruction
---			searchTable: for IR in 0 to tableSize - 1 loop
---				if(inputTable(addrSize*IR to addrSize*(IR+1) - 1) = in_IF and historyBit(IR)) then
---					out_pred <= predTable(addrSize*IR to addrSize*(IR+1) - 1);
---					branch <= '1';
---					found := '1'; --match is found
---					EXIT searchTable;
---				end if; 
---			end loop searchTable
---			
---			if(not found) then -- return dummy prediciton
---				branch <= '0';
---				out_pred <= "0000000000000000";
---			end if;
---		else 
---			branch <= '0';
---			out_pred <= "0000000000000000";
---		end if;
---	end process readTable;
---	
---	writeTable: process(in_EXE, in_pred, BR_WR, hb_in) is --write to the LUT by changing the hb or adding a new entry
---		variable found: std_logic := '0';
---	begin
---		if(in_EXE(15) and ((not in_EXE(13) and not in_EXE(12)) or (not in_EXE(14) and in_EXE(12))) and BR_WR) then
---			searchTable2: for IR in 0 to tableSize - 1 loop
---				if(inputTable(addrSize*IR to addrSize*(IR+1) - 1) = in_EXE) then
---					found := '1'; --match is found
---					historyBit(IR) <= hb_in;
---					EXIT searchTable2;
---				end if; 
---			end loop searchTable2
---			if(not found) then
---				inputTable(addrSize*head to addrSize*(head + 1)-1) <= in_EXE;
---				historyBit(head) <= hb_in;
---				predTable(addrSize*head to addrSize*(head + 1)-1) <= in_pred;
-				
+
+	IF_proc: process(in_IF, in_EXE, in_EXE2, hb_in, in_pred, opcode_IF, opcode_EXE) is
+		variable found: std_logic := '0';
+	begin
+		--check for branching opcode first
+		if(opcode_IF(5) = '1' and (((opcode_IF(3) = '0') and (opcode_IF(2) = '0')) or ((opcode_IF(4) = '0') and opcode_IF(2) = '1'))) then
+			searchLUTIF: for i in tableSize-1 downto 0 loop
+				--check if instruction in LUT
+				if(inputTable(i) = in_IF) then
+					-- check if HB = 1
+					if(historyBit(i) = '1') then
+						branch <= '1';
+						out_IF <= predTable(i);
+					else 
+						branch <= '0';
+						out_IF <= "0000000000000000";
+					end if;
+					EXIT searchLUTIF;
+				else
+					branch <= '0';
+					out_IF <= "0000000000000000";
+				end if;
+			end loop searchLUTIF;
+		else
+			branch <= '0';
+			out_IF <= "0000000000000000";
+		end if;
+
+		------------------Now we check for EXE stage-------------------------				
+
+		--check for branching opcode first
+		if(opcode_EXE(5) = '1' and (((opcode_EXE(3) = '0') and (opcode_EXE(2) = '0')) or ((opcode_EXE(4) = '0') and opcode_EXE(2) = '1'))) then
+			searchLUTEXE: for j in tableSize-1 downto 0 loop
+				--check if instruction in LUT
+				if(inputTable(j) = in_EXE) then
+					-- check if instruction has confirmed branched
+					if(hb_in = '1') then 
+						reset_wr <= not(historyBit(j));
+						out_EXE <= in_pred;
+						historyBit(j) <= '1';
+					else 
+						reset_wr <= historyBit(j);
+						out_EXE <= in_EXE2;
+						historyBit(j) <='0';
+					end if;
+					found := '1';
+					EXIT searchLUTEXE;
+				else
+					found := '0';
+				end if;
+			end loop searchLUTEXE;
+			--if not found in LUT
+			if(found = '0') then
+				if (hb_in = '1') then
+					inputTable(head) <= in_EXE;
+					predTable(head) <= in_pred;
+					historyBit(head) <= '1';
+				else
+					inputTable(head) <= in_EXE;
+					predTable(head) <= in_pred;
+					historyBit(head) <= '0';
+				end if;
+				if(head = 0) then
+					head := tableSize-1;
+				else
+					head := head - 1;
+				end if;
+			end if;
+		else
+			reset_wr <= '0';
+			out_EXE <= "0000000000000000";
+		end if;
+	end process IF_proc;
+			
 end predict;	
