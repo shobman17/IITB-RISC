@@ -126,7 +126,7 @@ architecture trivial of DataPath is
 	signal IF2ID_WR: std_logic;
 
 	signal ID_IM_out, ID_IM_in, OR_IM_in, EX_IM_in, IF_IM_in, ID_adder1_out: std_logic_vector(15 downto 0):=(others=>'0');	
-	signal if2id_wr_and_a, singular_one, alpha_update, ID_alpha, OR_alpha, if_LMSM: std_logic;
+	signal if2id_wr_and_a, singular_one, alpha_update, n_alpha_update, ID_alpha, OR_alpha, if_LMSM: std_logic;
     
 	--signal alu_a, alu_b, alu_out, s1_0, s1_10, s2_0, s2_1, s3_0, s3_1, s4_0, s4_1, s5_0, s5_1, d1, d2, d3, e8_out, se6_out, L7_out, m_a, m_in, m_out: std_logic_vector(15 downto 0):=(others=>'0');
 --	signal a1, a2, a3, s6_0, s6_1, s1_7, s1_6, s1_5, enc_out: std_logic_vector(2 downto 0):=(others=>'0');
@@ -137,7 +137,7 @@ architecture trivial of DataPath is
 --	signal s1_4:std_logic_vector(3 downto 0):=(others=>'0');
 --	signal t1_wr, t2_wr, t3_wr, t4_wr, t5_wr, t6_wr, m_rd, m_wr, r_wr, c_en, z_en, c_in, c_out, z_in, z_out, s1_8, s1_9: std_logic;
 	signal EX_opcode: std_logic_vector(5 downto 0):=(others=>'0');
-
+	signal A3_mux_select, bb_reset_all_zero: std_logic_vector;
 
 	begin
 
@@ -163,11 +163,9 @@ architecture trivial of DataPath is
 		adder1: component ADDER
 			port map(IF_IM_in, "0000000000000010", IF_adder1_out);
 		
+		n_alpha_update <= not(alpha_update);
 		IF2ID: component IF2IDreg
-			port map(clk, IF2ID_WR, IF_IM_out, IF_IM_in, IF_adder1_out, ID_IM_out, ID_IM_in, ID_adder1_out);
-			
-		IF2ID_AND: component AND_2
-			port map(bb_reset_wr, not singular_one, IF2ID_WR);
+			port map(clk, n_alpha_update, IF_IM_out, IF_IM_in, IF_adder1_out, ID_IM_out, ID_IM_in, ID_adder1_out);
 			
 		alpha_0: component alpha
 			port map(alpha_update, clk, ID_alpha);
@@ -253,11 +251,15 @@ architecture trivial of DataPath is
 		BranchingBlackBox: component bb_branching
 			port map(c_o, z_o, EX_opcode, hb_in);
 
+		A3_mux_select <= (not WB_opcode(5)) and WB_opcode(4) and WB_opcode(3) and (not WB_opcode(2));
+			
 		A3_MUX: component mux_2_1
-			port map(WB_11_9, WB_encoded, (not WB_opcode(5)) and WB_opcode(4) and WB_opcode(3) and (not WB_opcode(2)), A3);
+			port map(WB_11_9, WB_encoded, A3_mux_select, A3);
+
+		bb_reset_all_zero <= bb_reset_wr or all_zeros;
 
 		ID2OR_reset_WR_OR: component OR_2
-			port map(reset, bb_reset_wr or all_zeros, ID2OR_reset_WR);
+			port map(reset, bb_reset_all_zero, ID2OR_reset_WR);
 
 		OR2EX_reset_WR_OR: component OR_2
 			port map(reset, bb_reset_wr, OR2EX_reset_WR);
