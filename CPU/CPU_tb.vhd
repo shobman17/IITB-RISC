@@ -10,9 +10,10 @@ architecture bhv of CPU_tb is
 	end component Datapath;
 
 signal clk: std_logic := '1';
+signal reset : std_logic := '0';
 constant clk_period : time := 20 ns;
 begin
-	dut_instance: Datapath port map(clk);
+	dut_instance: Datapath port map(clk, reset);
 	clk <= not clk after clk_period/2 ;
 	reset <= '0';
 end bhv;

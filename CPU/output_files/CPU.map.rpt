@@ -1,5 +1,5 @@
-Analysis & Synthesis report for CPU
-Fri May 05 03:39:22 2023
+Analysis & Elaboration report for CPU
+Fri May 05 04:28:51 2023
 Quartus Prime Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
 
 
@@ -7,10 +7,10 @@ Quartus Prime Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
 ; Table of Contents ;
 ---------------------
   1. Legal Notice
-  2. Analysis & Synthesis Summary
-  3. Analysis & Synthesis Settings
-  4. Parallel Compilation
-  5. Analysis & Synthesis Messages
+  2. Analysis & Elaboration Summary
+  3. Parallel Compilation
+  4. Analysis & Elaboration Settings
+  5. Analysis & Elaboration Messages
 
 
 
@@ -35,9 +35,9 @@ https://fpgasoftware.intel.com/eula.
 
 
 +----------------------------------------------------------------------------------+
-; Analysis & Synthesis Summary                                                     ;
+; Analysis & Elaboration Summary                                                   ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Failed - Fri May 05 03:39:22 2023           ;
+; Analysis & Elaboration Status      ; Failed - Fri May 05 04:28:51 2023           ;
 ; Quartus Prime Version              ; 20.1.1 Build 720 11/11/2020 SJ Lite Edition ;
 ; Revision Name                      ; CPU                                         ;
 ; Top-level Entity Name              ; DataPath                                    ;
@@ -56,8 +56,24 @@ https://fpgasoftware.intel.com/eula.
 +------------------------------------+---------------------------------------------+
 
 
++------------------------------------------+
+; Parallel Compilation                     ;
++----------------------------+-------------+
+; Processors                 ; Number      ;
++----------------------------+-------------+
+; Number detected on machine ; 8           ;
+; Maximum allowed            ; 4           ;
+;                            ;             ;
+; Average used               ; 1.00        ;
+; Maximum used               ; 1           ;
+;                            ;             ;
+; Usage by Processor         ; % Time Used ;
+;     Processor 1            ; 100.0%      ;
++----------------------------+-------------+
+
+
 +------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Settings                                                                              ;
+; Analysis & Elaboration Settings                                                                            ;
 +------------------------------------------------------------------+--------------------+--------------------+
 ; Option                                                           ; Setting            ; Default Value      ;
 +------------------------------------------------------------------+--------------------+--------------------+
@@ -142,41 +158,84 @@ https://fpgasoftware.intel.com/eula.
 +------------------------------------------------------------------+--------------------+--------------------+
 
 
-+------------------------------------------+
-; Parallel Compilation                     ;
-+----------------------------+-------------+
-; Processors                 ; Number      ;
-+----------------------------+-------------+
-; Number detected on machine ; 8           ;
-; Maximum allowed            ; 4           ;
-;                            ;             ;
-; Average used               ; 1.00        ;
-; Maximum used               ; 1           ;
-;                            ;             ;
-; Usage by Processor         ; % Time Used ;
-;     Processor 1            ; 100.0%      ;
-+----------------------------+-------------+
-
-
-+-------------------------------+
-; Analysis & Synthesis Messages ;
-+-------------------------------+
++---------------------------------+
+; Analysis & Elaboration Messages ;
++---------------------------------+
 Info: *******************************************************************
-Info: Running Quartus Prime Analysis & Synthesis
+Info: Running Quartus Prime Analysis & Elaboration
     Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
-    Info: Processing started: Fri May 05 03:39:12 2023
-Info: Command: quartus_map --read_settings_files=on --write_settings_files=off CPU -c CPU
+    Info: Processing started: Fri May 05 04:28:40 2023
+Info: Command: quartus_map --read_settings_files=on --write_settings_files=off CPU -c CPU --analysis_and_elaboration
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
 Info (12021): Found 2 design units, including 1 entities, in source file cpu_tb.vhd
     Info (12022): Found design unit 1: CPU_tb-bhv File: C:/Users/aryav/Desktop/IITB-RISC/CPU/CPU_tb.vhd Line: 7
     Info (12023): Found entity 1: CPU_tb File: C:/Users/aryav/Desktop/IITB-RISC/CPU/CPU_tb.vhd Line: 4
-Error (10430): VHDL Primary Unit Declaration error at Components.vhdl(1497): primary unit "ID2ORreg" already exists in library "work". Compile the two primary units into different libraries or assign them unique names. The Intel FPGA Knowledge Database contains many articles with specific details on how to resolve this error. Visit the Knowledge Database at https://www.altera.com/support/support-resources/knowledge-base/search.html and search for this specific error message number. File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1497
-Error (10784): HDL error at Components.vhdl(486): see declaration for object "ID2ORreg" File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 486
-Error (10500): VHDL syntax error at Components.vhdl(1562) near text "instr_5_0_out";  expecting ";" File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1562
-Error (10523): Ignored construct MA2WBreg at Components.vhdl(1613) due to previous errors File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1613
-Error (10523): Ignored construct OR2EXreg at Components.vhdl(1692) due to previous errors File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1692
-Info (12021): Found 0 design units, including 0 entities, in source file components.vhdl
+Info (12021): Found 64 design units, including 32 entities, in source file components.vhdl
+    Info (12022): Found design unit 1: reverse_decoder_3to8-dec File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 10
+    Info (12022): Found design unit 2: custom_encoder-enc File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 31
+    Info (12022): Found design unit 3: subtractor-sub File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 62
+    Info (12022): Found design unit 4: T_reg-bhv File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 97
+    Info (12022): Found design unit 5: extender_nine-major_extending File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 122
+    Info (12022): Found design unit 6: Lshifter6-multiply_by_two File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 147
+    Info (12022): Found design unit 7: Lshifter9-multiply_by_two File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 171
+    Info (12022): Found design unit 8: bbD1-blackboxed File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 197
+    Info (12022): Found design unit 9: bbD2-blackboxed2 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 239
+    Info (12022): Found design unit 10: bb_cwr_zwr-blackboxed3 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 280
+    Info (12022): Found design unit 11: bb_branching-blackboxed4 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 340
+    Info (12022): Found design unit 12: pc_mux-blackboxed5 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 376
+    Info (12022): Found design unit 13: ALU_unit_cell-unit File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 411
+    Info (12022): Found design unit 14: ALU-addnand File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 446
+    Info (12022): Found design unit 15: ADDER_unit_cell-unit File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 482
+    Info (12022): Found design unit 16: ADDER-add File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 523
+    Info (12022): Found design unit 17: alpha-update File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 565
+    Info (12022): Found design unit 18: CZreg-bhv File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 595
+    Info (12022): Found design unit 19: mux_2_1-Structer File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 634
+    Info (12022): Found design unit 20: mux_4_1-Structer4 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 665
+    Info (12022): Found design unit 21: mux51-Structer5 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 698
+    Info (12022): Found design unit 22: Memory_Code-memorykakaam File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 733
+    Info (12022): Found design unit 23: Memory_Data-memorykakaam File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 762
+    Info (12022): Found design unit 24: IF2IDreg-bhv1 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 798
+    Info (12022): Found design unit 25: branch_predictor-predict File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 850
+    Info (12022): Found design unit 26: controller-dictator File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 963
+    Info (12022): Found design unit 27: prog_reg-pr File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1063
+    Info (12022): Found design unit 28: signed_extender-ext File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1158
+    Info (12022): Found design unit 29: EX2MAreg-bhv4 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1208
+    Info (12022): Found design unit 30: ID2ORreg-bhv2 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1307
+    Info (12022): Found design unit 31: MA2WBreg-bhv5 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1412
+    Info (12022): Found design unit 32: OR2EXreg-bhv3 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1505
+    Info (12023): Found entity 1: reverse_decoder_3to8 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 5
+    Info (12023): Found entity 2: custom_encoder File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 25
+    Info (12023): Found entity 3: subtractor File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 56
+    Info (12023): Found entity 4: T_reg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 91
+    Info (12023): Found entity 5: extender_nine File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 117
+    Info (12023): Found entity 6: Lshifter6 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 142
+    Info (12023): Found entity 7: Lshifter9 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 166
+    Info (12023): Found entity 8: bbD1 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 189
+    Info (12023): Found entity 9: bbD2 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 231
+    Info (12023): Found entity 10: bb_cwr_zwr File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 273
+    Info (12023): Found entity 11: bb_branching File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 334
+    Info (12023): Found entity 12: pc_mux File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 367
+    Info (12023): Found entity 13: ALU_unit_cell File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 404
+    Info (12023): Found entity 14: ALU File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 437
+    Info (12023): Found entity 15: ADDER_unit_cell File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 476
+    Info (12023): Found entity 16: ADDER File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 514
+    Info (12023): Found entity 17: alpha File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 559
+    Info (12023): Found entity 18: CZreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 589
+    Info (12023): Found entity 19: mux_2_1 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 628
+    Info (12023): Found entity 20: mux_4_1 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 659
+    Info (12023): Found entity 21: mux51 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 692
+    Info (12023): Found entity 22: Memory_Code File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 725
+    Info (12023): Found entity 23: Memory_Data File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 754
+    Info (12023): Found entity 24: IF2IDreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 791
+    Info (12023): Found entity 25: branch_predictor File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 837
+    Info (12023): Found entity 26: controller File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 944
+    Info (12023): Found entity 27: prog_reg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1051
+    Info (12023): Found entity 28: signed_extender File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1153
+    Info (12023): Found entity 29: EX2MAreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1177
+    Info (12023): Found entity 30: ID2ORreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1262
+    Info (12023): Found entity 31: MA2WBreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1385
+    Info (12023): Found entity 32: OR2EXreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1464
 Info (12021): Found 17 design units, including 8 entities, in source file gates.vhdl
     Info (12022): Found design unit 1: Gates File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Gates.vhdl Line: 7
     Info (12022): Found design unit 2: INVERTER-Equations File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Gates.vhdl Line: 50
@@ -196,12 +255,14 @@ Info (12021): Found 17 design units, including 8 entities, in source file gates.
     Info (12023): Found entity 7: XNOR_2 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Gates.vhdl Line: 114
     Info (12023): Found entity 8: HALF_ADDER File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Gates.vhdl Line: 125
 Info (12021): Found 2 design units, including 1 entities, in source file datapath.vhd
-    Info (12022): Found design unit 1: DataPath-trivial File: C:/Users/aryav/Desktop/IITB-RISC/CPU/DataPath.vhd Line: 14
-    Info (12023): Found entity 1: DataPath File: C:/Users/aryav/Desktop/IITB-RISC/CPU/DataPath.vhd Line: 10
-Error: Quartus Prime Analysis & Synthesis was unsuccessful. 5 errors, 1 warning
+    Info (12022): Found design unit 1: DataPath-trivial File: C:/Users/aryav/Desktop/IITB-RISC/CPU/DataPath.vhd Line: 13
+    Info (12023): Found entity 1: DataPath File: C:/Users/aryav/Desktop/IITB-RISC/CPU/DataPath.vhd Line: 9
+Error (10481): VHDL Use Clause error at DataPath.vhd(5): design library "work" does not contain primary unit "Components". Verify that the primary unit exists in the library and has been successfully compiled. File: C:/Users/aryav/Desktop/IITB-RISC/CPU/DataPath.vhd Line: 5
+Error (10800): VHDL error at DataPath.vhd(5): selected name in use clause is not an expanded name File: C:/Users/aryav/Desktop/IITB-RISC/CPU/DataPath.vhd Line: 5
+Error: Quartus Prime Analysis & Elaboration was unsuccessful. 2 errors, 1 warning
     Error: Peak virtual memory: 4779 megabytes
-    Error: Processing ended: Fri May 05 03:39:22 2023
-    Error: Elapsed time: 00:00:10
-    Error: Total CPU time (on all processors): 00:00:13
+    Error: Processing ended: Fri May 05 04:28:51 2023
+    Error: Elapsed time: 00:00:11
+    Error: Total CPU time (on all processors): 00:00:12
 
 
