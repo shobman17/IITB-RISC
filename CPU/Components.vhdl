@@ -116,8 +116,8 @@ entity Lshifter6 is
 			outp : out std_logic_vector (15 downto 0));
 end entity LShifter6;
 
-architecture yes of Lshifter6 is
-	begin multiply_by_two
+architecture multiply_by_two of Lshifter6 is
+	begin 
 		outp(15 downto 7) <= "000000000";
 		outp(6 downto 1) <= inp;
 		outp(0) <= '0';
@@ -140,8 +140,8 @@ entity Lshifter9 is
 			outp : out std_logic_vector (15 downto 0));
 end entity LShifter9;
 
-architecture yes of Lshifter9 is
-	begin multiply_by_two
+architecture multiply_by_two of Lshifter9 is
+	begin 
 		outp(15 downto 10) <= "000000";
 		outp(9 downto 1) <= inp;
 		outp(0) <= '0';
@@ -161,7 +161,7 @@ library Work;
 entity bbD1 is
 	port (
 			mux_rf_a1_output, or2ex_a3, ex2ma_a3, ma2wb_a3:in std_logic_vector(2 downto 0);
-			or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr: in std_logic
+			or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr: in std_logic;
 		   id2or_mux_alu_a : in std_logic_vector(1 downto 0);
 			mux_rf_d1_1, mux_rf_d1_0 : out std_logic);
 end entity bbD1;
@@ -280,7 +280,7 @@ architecture blackboxed3 of bb_cwr_zwr is
 				c_wr<= '0';
 				rf_wr_and_a<='1' and EX_RF_WR;
 				z_wr<= '1';
-			elsif (opcode = "000110" or opcode = "000101" or opcode = "001010" or opcode = "001001")
+			elsif (opcode = "000110" or opcode = "000101" or opcode = "001010" or opcode = "001001") then
 			   c_wr<= '0';
 				z_wr<= '0';
 				rf_wr_and_a<='0' and EX_RF_WR;
@@ -837,40 +837,6 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library Work;
-entity PC is
-	port (
-			input:in std_logic_vector(15 downto 0);
-			clk, PC_WR, reset: in std_logic;
-			output: out std_logic_vector(15 downto 0));
-end entity alpha;
-
-architecture update of PC is 
-	signal alpha_content: std_logic := '0';
-begin
-	write_alpha: process(clk) is
-	begin
-		if(falling_edge(clk) and PC_WR = 1) then
-			alpha_content <= input;
-		end if;
-		if(reset = '1') then
-			alpha_content <= "0000000000000000";
-		end if;
-	end process write_alpha;
-	
-	output <= alpha_content;
-end update;
-			
---------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------NEW COMPONENT-----------------------------------------
---------------------------------------------------------------DON'T BLINK-------------------------------------------
---------------------------------------------------------------LEST YOU MISS-----------------------------------------
---------------------------------------------------------------------------------------------------------------------
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
-library Work;
 entity CZreg is
 	port (
 			c_in, z_in, clk, c_wr, z_wr:in std_logic;
@@ -1321,51 +1287,6 @@ begin
 	 WB_st <= WB_MUX_1 & WB_MUX_0;
 
 end dictator;
---------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------NEW COMPONENT-----------------------------------------
---------------------------------------------------------------DON'T BLINK-------------------------------------------
---------------------------------------------------------------LEST YOU MISS-----------------------------------------
---------------------------------------------------------------------------------------------------------------------
------------------------------------LEFT SHIFTER 9 BIT----Multiply by two------------------------------------
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
-entity Lshifter9 is
-	port (inp : in std_logic_vector (8 downto 0);
-			outp : out std_logic_vector (15 downto 0));
-end entity LShifter9;
-
-architecture  of Lshifter9 is
-	begin multiply_by_two
-		outp(15 downto 10) <= "000000";
-		outp(9 downto 1) <= inp;
-		outp(0) <= '0';
-end multiply_by_two;
-
---------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------NEW COMPONENT-----------------------------------------
---------------------------------------------------------------DON'T BLINK-------------------------------------------
---------------------------------------------------------------LEST YOU MISS-----------------------------------------
---------------------------------------------------------------------------------------------------------------------
------------------------------------LEFT SHIFTER 6 BIT----Multiply by two------------------------------------
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
-entity Lshifter6 is
-	port (inp : in std_logic_vector (5 downto 0);
-			outp : out std_logic_vector (15 downto 0));
-end entity LShifter6;
-
-architecture  of Lshifter6 is
-	begin multiply_by_two
-		outp(15 downto 7) <= "000000000";
-		outp(6 downto 1) <= inp;
-		outp(0) <= '0';
-end multiply_by_two;
 
 --------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------NEW COMPONENT-----------------------------------------

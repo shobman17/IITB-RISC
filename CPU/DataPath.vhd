@@ -106,7 +106,7 @@ architecture trivial of DataPath is
 	for all: OR2EXreg
 		use entity work.OR2EXreg(bhv3);
 	
-	signal IF_IM_in, EX_IM_in, update_PC, IF_IM_out, EX_D1_MUX_out, EX_adder2_out, IF_BP_pred, IF_adder1_out, OR_adder1_out, EX_adder1_out,  MA_adder1_out, WB_adder1_out, : std_logic_vector(15 downto 0):=(others=>'0');
+	signal IF_IM_in, EX_IM_in, update_PC, IF_IM_out, EX_D1_MUX_out, EX_adder2_out, IF_BP_pred, IF_adder1_out, OR_adder1_out, EX_adder1_out,  MA_adder1_out, WB_adder1_out : std_logic_vector(15 downto 0):=(others=>'0');
 	signal clk, PC_WR, BP_control, PC_MUX_branch, hb_in, BR_WR: std_logic;
 	signal Mem_D1, OR_E9out, EX_E9out, MA_E9out, WB_E9out, WB_default, MA_out, Mem_D1, OR_SE6out, MA_SE6out, EX_D2_MUX_out : std_logic_vector(15 downto 0);
 	signal ID_8_0, ID_LS9out, OR_LS9out, EX_LS9out : std_logic_vector(8 downto 0);
