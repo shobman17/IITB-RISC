@@ -126,8 +126,6 @@ architecture trivial of DataPath is
 
 
 	begin
-		--How many t_regs do we need? 5. The first one is a bit special though
-
 		PCyes: component PC
 			port map(update_PC, clk, PC_WR, IF_IM_in);
 		
@@ -141,7 +139,14 @@ architecture trivial of DataPath is
 			port map(IF_adder1_out, EX_adder2_out, EX_D1_MUX_out, IF_BP_pred, PC_MUX_ctrl(0), PC_MUX_ctrl(1), update_PC);
 			
 		BranchPredictor: component branch_predictor
-			port map(IF_IM_in, EX_IM_in, update_PC, BR_WR, hb_in, IF_BP_pred, BP_control);
+			port map(IF_IM_in, EX_IM_in, EX_adder2_out, EX_adder1_out, ,  update_PC, BR_WR, hb_in, IF_BP_pred, BP_control);
+		
+		in_IF, in_EXE, in_pred, in_EXE2: in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
+		opcode_IF, opcode_EXE: in std_logic_vector(5 downto 0);
+		hb_in: in std_logic; -- input for history bit to write to this table
+		out_IF, out_EXE: out std_logic_vector(15 downto 0); -- prediction output or correction to branch
+		branch: out std_logic; -- whether to branch or not
+		reset_wr: out std_logic); -- whether prediction was wrong or not
 
 		adder1: component ADDER
 			port map(IF_IM_in, "0000000000000010", IF_adder1_out);
