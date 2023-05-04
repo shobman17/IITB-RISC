@@ -49,8 +49,8 @@ architecture trivial of DataPath is
 	for all: bb_branching
 		use entity work.bb_branching(blackboxed4);
 		
-	for all: bb_pc_mux
-		use entity work.bb_pc_mux(blackboxed5);
+	for all: pc_mux
+		use entity work.pc_mux(blackboxed5);
 		
 	for all: Lshifter6
 		use entity work.Leftshifter(yes);
@@ -115,7 +115,13 @@ architecture trivial of DataPath is
 	signal ID_8_6, OR_8_6 : std_logic_vector(2 downto 0);
 	signal ID_5_3, OR_5_3 : std_logic_vector(2 downto 0);
 	signal ID_2_0, OR_2_0, ID_encoded, OR_encoded: std_logic(2 downto 0);
-	signal updated_imm, subtractor_in : std_logic_vector(8 downto )
+	signal updated_imm, subtractor_out, subtractor_in: std_logic_vector(7 downto 0);
+	signal alu_ain, alu_bin, adder2_ain, adder2_bin : std_logic_vector(15 downto 0);
+	signal RF_writeback, EX_ALU_out, MA_ALU_out : std_logic_vector(15 downto 0);
+	signal c_o, z_o, alu_carry, EX_c : std_logic;
+	signal D1, D2, OR_D1_MUX_OUT, OR_D2_MUX_OUT : std_logic_vector(15 downto 0);
+	signal out_IF, out_EXE: std_logic_vector(15 downto 0);
+	signal branch: std_logic;
 
 	signal IF2ID_WR: std_logic;
 
@@ -130,13 +136,10 @@ architecture trivial of DataPath is
 --	signal s1_3, dec_out: std_logic_vector(7 downto 0);
 --	signal s1_4:std_logic_vector(3 downto 0):=(others=>'0');
 --	signal t1_wr, t2_wr, t3_wr, t4_wr, t5_wr, t6_wr, m_rd, m_wr, r_wr, c_en, z_en, c_in, c_out, z_in, z_out, s1_8, s1_9: std_logic;
-	signal PC_MUX_ctrl:	std_logic_vector(1 downto 0):=(others=>'0');
 	signal EX_opcode: std_logic_vector(5 downto 0):=(others=>'0');
 
 
 	begin
-		PCyes: component PC
-			port map(update_PC, clk, PC_WR, IF_IM_in);
 
 		PC_WR_AND: component AND_2
 			port map(bb_PC_wr_suggestion, singular_one, PC_WR);
@@ -144,14 +147,11 @@ architecture trivial of DataPath is
 		InstructionMemory: component Memory_Code
 			port map(clk, IF_IM_in, IF_IM_out);
 			
-		PC_MUX_Blackbox: component bb_pc_mux
-			port map(PC_MUX_branch, BP_control, EX_opcode, A3, PC_MUX_ctrl, bb_PC_wr_suggestion);
-			
-		PC_MUX: component mux_4_1
-			port map(IF_adder1_out, EX_adder2_out, EX_D1_MUX_out, IF_BP_pred, PC_MUX_ctrl(0), PC_MUX_ctrl(1), update_PC);
-			
+		PC_MUX: component pc_mux
+			port map(IF_adder1_out, EX_D1_MUX_out, EX_adder2_out, out_IF, out_EXE, EX_opcode, branch, bb_reset_wr, update_PC);
+		
 		BranchPredictor: component branch_predictor
-			port map(IF_IM_in, EX_IM_in, EX_adder2_out, EX_adder1_out, ID_opcode, EX_opcode, hb_in, IF_BP_pred, BP_control, reset_wr);
+			port map(IF_IM_in, EX_IM_in, EX_adder2_out, EX_adder1_out, EX_opcode, hb_in, out_IF, out_EXE, branch, bb_reset_wr);
 		--Fuck bhai ye kya banaya hai
 		-- in_IF, in_EXE, in_pred, in_EXE2: in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
 		-- opcode_IF, opcode_EXE: in std_logic_vector(5 downto 0);
@@ -167,7 +167,7 @@ architecture trivial of DataPath is
 			port map(clk, IF2ID_WR, IF_IM_out, IF_IM_in, IF_adder1_out, ID_IM_out, ID_IM_in, ID_adder1_out);
 			
 		IF2ID_AND: component AND_2
-			port map(if2id_wr_and_a, not singular_one, IF2ID_WR);
+			port map(bb_reset_wr, not singular_one, IF2ID_WR);
 			
 		alpha_0: component alpha
 			port map(alpha_update, clk, ID_alpha);
@@ -197,7 +197,7 @@ architecture trivial of DataPath is
 			port map(OR_5_3, OR_11_9, OR_controls(2), A2_in);
 		
 		reg_file: component prog_reg
-			port map(A1_in, A2_in, A3, D1, D2, RF_writeback, clk, WB_RF_WR);
+			port map(A1_in, A2_in, A3, D1, D2, RF_writeback, update_PC, IF_IM_in, PC_WR, clk, WB_RF_WR, reset);
 			
 		subtractor0: component subtractor
 			port map(subtractor_in, subtractor_out);
@@ -248,19 +248,19 @@ architecture trivial of DataPath is
 			port map(adder2_ain, adder2_bin, EX_adder2_out);
 			
 		CZBlackBox: component bb_cwr_zwr
-			port map(EX_RF_WR, ,MA_c, MA_z, EX_opcode, c_wr, z_wr, ex_rf_wr_and_a);
+			port map(EX_RF_WR, MA_c, MA_z, EX_opcode, c_wr, z_wr, ex_rf_wr_and_a);
 			
 		BranchingBlackBox: component bb_branching
-			port map(c_o, z_o, EX_opcode, PC_MUX_branch, if2id_wr_and_a, id2or_reset_all_wr, or2ex_reset_all_wr);
+			port map(c_o, z_o, EX_opcode, hb_in);
 
 		A3_MUX: component mux_2_1
 			port map(WB_11_9, WB_encoded, (not WB_opcode(5)) and WB_opcode(4) and WB_opcode(3) and (not WB_opcode(2)), A3);
 
 		ID2OR_reset_WR_OR: component OR_2
-			port map(reset, id2or_reset_all_wr, ID2OR_reset_WR);
+			port map(reset, bb_reset_wr or all_zeros, ID2OR_reset_WR);
 
 		OR2EX_reset_WR_OR: component OR_2
-			port map(reset, or2ex_reset_all_wr, OR2EX_reset_WR);
+			port map(reset, bb_reset_wr, OR2EX_reset_WR);
 		
 		Mem_out_MUX: component mux_2_1
 			port map(MA_ALU_out, Mem_D1, MA_controls(3), MA_out);

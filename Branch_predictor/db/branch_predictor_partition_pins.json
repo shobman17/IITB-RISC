@@ -1,0 +1,421 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "out_IF[0]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[1]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[2]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[3]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[4]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[5]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[6]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[7]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[8]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[9]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[10]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[11]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[12]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[13]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[14]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[15]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[0]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[1]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[2]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[3]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[4]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[5]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[6]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[7]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[8]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[9]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[10]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[11]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[12]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[13]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[14]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[15]",
+					"strict" : false
+				},
+				{
+					"name" : "branch",
+					"strict" : false
+				},
+				{
+					"name" : "reset_wr",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[0]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[1]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[2]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[3]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[4]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[5]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[6]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[7]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[8]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[9]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[10]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[11]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[12]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[13]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[14]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[15]",
+					"strict" : false
+				},
+				{
+					"name" : "opcode_EXE[5]",
+					"strict" : false
+				},
+				{
+					"name" : "opcode_EXE[2]",
+					"strict" : false
+				},
+				{
+					"name" : "opcode_EXE[3]",
+					"strict" : false
+				},
+				{
+					"name" : "opcode_EXE[4]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[0]",
+					"strict" : false
+				},
+				{
+					"name" : "hb_in",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[0]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[1]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[0]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[3]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[2]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[5]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[4]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[7]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[6]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[9]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[8]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[11]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[10]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[13]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[12]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[15]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE[14]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[1]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[1]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[2]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[2]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[3]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[3]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[4]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[4]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[5]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[5]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[6]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[6]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[7]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[7]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[8]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[8]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[9]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[9]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[10]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[10]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[11]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[11]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[12]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[12]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[13]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[13]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[14]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[14]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[15]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[15]",
+					"strict" : false
+				}
+			]
+		}
+	]
+}

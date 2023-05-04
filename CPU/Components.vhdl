@@ -246,19 +246,17 @@ entity bb_cwr_zwr is
 	port (
 			EX_RF_WR, ex2ma_c, ex2ma_z:in std_logic;
 		   opcode : in std_logic_vector(5 downto 0);
-<<<<<<< HEAD
-			c_wr, z_wr : out std_logic);
+			c_wr, z_wr, rf_wr_and_a: out std_logic);
 end entity bb_cwr_zwr;
-=======
-			c_wr, z_wr, rf_wr_and_a : out std_logic);
-end entity bb_cwr_zwr;
->>>>>>> 321aa7e9c243498c59ba5536f63a0783011417b9
 
 architecture blackboxed3 of bb_cwr_zwr is
 	begin
 		edit_process: process(ex2ma_c, ex2ma_z, opcode)
 		begin
-			if (opcode = "000100" or opcode = "000111" or opcode = "000000" or opcode = "000001" or opcode = "000010" or opcode = "000011") then
+			if (EX_RF_WR ='0') then
+				c_wr <= '0';
+				z_wr <= '0';
+			elsif (opcode = "000100" or opcode = "000111" or opcode = "000000" or opcode = "000001" or opcode = "000010" or opcode = "000011") then
 				c_wr<= '1';
 				z_wr<= '1';
 				rf_wr_and_a<=EX_RF_WR and '1';
@@ -295,51 +293,6 @@ architecture blackboxed3 of bb_cwr_zwr is
 		end process;
 end architecture blackboxed3;
 
-
---------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------NEW COMPONENT-----------------------------------------
---------------------------------------------------------------DON'T BLINK-------------------------------------------
---------------------------------------------------------------LEST YOU MISS-----------------------------------------
---------------------------------------------------------------------------------------------------------------------
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
-library Work;
-entity bb_pc_mux is
-	port (
-			pc_mux_branch, bp_control:in std_logic;
-		   op2ex_opcode : in std_logic_vector(5 downto 0);
-		   A3: in std_logic_vector(2 downto 0);
-			pc_mux_control_bits : out std_logic_vector(1 downto 0);
-			pc_wr: out std_logic);
-end entity bb_pc_mux;
-
-architecture blackboxed5 of bb_pc_mux is
-	begin
-		edit_process: process(pc_mux_branch, bp_control, op2ex_opcode, A3)
-		begin
-			if (A3 = "000") then
-				pc_wr <= '0';
-			elsif (pc_mux_branch = '1') then 
-				  pc_mux_control_bits <= "01";
-				  pc_wr<='1';
-			elsif (op2ex_opcode(5 downto 2) = "1101") then 
-				  pc_mux_control_bits <= "10";
-				  pc_wr<='1';
-			elsif (bp_control = '1') then 
-				  pc_mux_control_bits <= "11";
-				  pc_wr<='1';
-			else 
-				  pc_mux_control_bits <= "00";
-				  pc_wr<='1';
-				
-			end if;
-			
-		end process;
-end architecture blackboxed5;
-
-
 --------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------NEW COMPONENT-----------------------------------------
 --------------------------------------------------------------DON'T BLINK-------------------------------------------
@@ -353,27 +306,21 @@ library Work;
 entity bb_branching is
 	port (c_o, z_o:in std_logic;
 		   opcode : in std_logic_vector(5 downto 0);
-			 pc_mux_branch,if2id_wr_and_a, id2or_reset_all_wr, or2ex_reset_all_wr  : out std_logic);
+			hb_in : out std_logic);
 end entity bb_branching;
 
 architecture blackboxed4 of bb_branching is
 	begin
 		edit_process: process(c_o, z_o, opcode)
 		begin
-			if (((opcode = "100000" or opcode = "100001" or opcode ="100010" or opcode ="100011") and c_o ='1' and z_o ='1') or 
-			    (opcode = "100100" or opcode ="100101" or opcode ="100110" or opcode ="100111" and c_o = '0' and z_o ='0') or 
-				 (c_o = '1' and z_o ='1') or (opcode ="110000" or opcode ="110001" or opcode ="110010" or opcode ="110011") or
-				 (opcode ="111100" or opcode ="111101" or opcode ="111110" or opcode ="111111")) then 
+			if (((opcode(5 downto 2) = "1000") and c_o ='1' and z_o ='1') or 
+			    ((opcode(5 downto 2) = "1001") and (c_o = '1' and z_o ='0')) or 
+				(opcode(5 downto 2)="1011" and (c_o = '1')) or
+				(opcode(5 downto 2) ="1100") or  (opcode(5 downto 2) ="1111")) then 
 				 
-			     pc_mux_branch <= '1';
-				  if2id_wr_and_a <= '0';
-				  id2or_reset_all_wr <= '1';
-				  or2ex_reset_all_wr <= '1';
-			else 
-				  pc_mux_branch <= '0';
-				  if2id_wr_and_a <= '1';
-				  id2or_reset_all_wr <= '0';
-				  or2ex_reset_all_wr <= '0';
+			      hb_in<= '1';
+			else
+				  hb_in<='0';
 			end if;
 			
 		end process;
@@ -387,74 +334,34 @@ end architecture blackboxed4;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-
 library Work;
-entity bb_branching is
+
+entity pc_mux is
 	port (
-			c_o, z_o:in std_logic;
-		   opcode : in std_logic_vector(5 downto 0);
-			 pc_mux_branch,if2id_wr_and_a, id2or_reset_all_wr, or2ex_reset_all_wr  : out std_logic);
-end entity bb_branching;
+		PC2, D1_out, Adder_out, out_IF, out_EXE: in std_logic_vector(15 downto 0);
+		opcode_EXE: in std_logic_vector(5 downto 0);
+		branch, reset_wr: in std_logic;
+		PC_out: out std_logic_vector(15 downto 0)
+	);
+end entity pc_mux;
 
-architecture blackboxed4 of bb_branching is
+architecture blackboxed5 of pc_mux is
 	begin
-		edit_process: process(c_o, z_o, opcode)
+		edit_process: process(opcode_EXE, branch, reset_wr, PC2, D1_out, Adder_out, out_IF, out_EXE)
 		begin
-			if ((opcode = ("100000" or "100001" or "100010" or "100011") and c_o ='1' and z_o ='1') or 
-			    (opcode = ("100100" or "100101" or "100110" or "100111") and c_o = '0' and z_o ='0') or 
-				 (c_o = '1' and z_o ='1') or (opcode =("110000" or "110001" or "110010" or "110011")) or
-				 (opcode =("111100" or "111101" or "111110" or "111111"))) then 
-				 
-			     pc_mux_branch <= '1';
-				  if2id_wr_and_a <= '0';
-				  id2or_reset_all_wr <= '1';
-				  or2ex_reset_all_wr <= '1';
-			else 
-				  pc_mux_branch <= '0';
-				  if2id_wr_and_a <= '1';
-				  id2or_reset_all_wr <= '0';
-				  or2ex_reset_all_wr <= '0';
+			if (opcode_EXE(5 downto 2) = "1111") then -- JRI
+				PC_out <= Adder_out;
+			elsif (opcode_EXE(5 downto 2) = "1101") then -- JLR
+				PC_out <= D1_out;
+			elsif (branch = '1') then -- conditional branch + JAL
+				PC_out <= out_IF;
+			elsif (reset_wr = '1') then -- conditional branch + JAL 
+				PC_out <= out_EXE;
+			else
+				PC_out <= PC2;
 			end if;
-			
-		end process;
-end architecture blackboxed4;
-
---------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------NEW COMPONENT-----------------------------------------
---------------------------------------------------------------DON'T BLINK-------------------------------------------
---------------------------------------------------------------LEST YOU MISS-----------------------------------------
---------------------------------------------------------------------------------------------------------------------
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
-library Work;
-entity bb_pc_mux is
-	port (
-			pc_mux_branch, bp_control:in std_logic;
-		   op2ex_opcode : in std_logic_vector(3 downto 0);
-			pc_mux_control_bits : out std_logic_vector(1 downto 0));
-end entity bb_pc_mux;
-
-architecture blackboxed5 of bb_pc_mux is
-	begin
-		edit_process: process(pc_mux_branch, bp_control,op2ex_opcode )
-		begin
-			if (pc_mux_branch = '1') then 
-				  pc_mux_control_bits <= "01";
-			elsif (op2ex_opcode = "1101") then 
-				  pc_mux_control_bits <= "10";
-			elsif (bp_control = '1') then 
-				  pc_mux_control_bits <= "11";
-			else 
-				  pc_mux_control_bits <= "00";
-				
-			end if;
-			
-		end process;
+		end process edit_process;
 end architecture blackboxed5;
-
 --------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------NEW COMPONENT-----------------------------------------
 --------------------------------------------------------------DON'T BLINK-------------------------------------------
@@ -566,83 +473,6 @@ begin
 	
 	
 end unit;
---------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------NEW COMPONENT-----------------------------------------
---------------------------------------------------------------DON'T BLINK-------------------------------------------
---------------------------------------------------------------LEST YOU MISS-----------------------------------------
---------------------------------------------------------------------------------------------------------------------
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-entity EX2MAreg is
-	port (
-			---------------------------------inputs
-			clk, EX2MA_WR: in std_logic;
-            reset_wr: in std_logic;
-            opcode_in: in std_logic_vector(5 downto 0);
-            instr_11_9_in : in std_logic_vector(2 downto 0);
-            E9_output_in: in std_logic_vector(15 downto 0);
-            ALU_output_in: in std_logic_vector(15 downto 0);
-            D2_output_in: in std_logic_vector(15 downto 0); 
-            enc_addr_in : in std_logic_vector(2 downto 0); -- output from custom encoder
-            PC2_in : in std_logic_vector(15 downto 0);
-            MA_st_in : in std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
-            WB_st_in : in std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
-            RF_WR_in: in std_logic;
-            ---------------------------------outputs
-            opcode_out: out std_logic_vector(5 downto 0);
-            instr_11_9_out : out std_logic_vector(2 downto 0);
-            E9_output_out: out std_logic_vector(15 downto 0);
-            ALU_output_out: out std_logic_vector(15 downto 0);
-            D2_output_out: out std_logic_vector(15 downto 0); 
-            enc_addr_out : out std_logic_vector(2 downto 0); -- output from custom encoder
-            PC2_out : out std_logic_vector(15 downto 0);
-            MA_st_out : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
-            WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
-            RF_WR_out: out std_logic
-    );
-end entity EX2MAreg;
-
-architecture bhv4 of EX2MAreg is
-	signal opcode_s: std_logic_vector(5 downto 0) := "000000";
-    signal instr_11_9_s, enc_addr_s: std_logic_vector(2 downto 0) := "000";
-    signal PC2_s, E9_output_s, D2_output_s, ALU_output_s: std_logic_vector(15 downto 0) := "0000000000000000";
-    signal MA_st_s: std_logic_vector(3 downto 0) := "0000";
-    signal WB_st_s: std_logic_vector(1 downto 0) := "00";
-    signal RF_WR_S: std_logic := '0';
-begin
-
-    opcode_out <= opcode_s;
-    instr_11_9_out <= instr_11_9_s;
-    E9_output_out <= E9_output_s;
-    ALU_output_out <= ALU_output_s;
-    D2_output_out <= D2_output_s;
-    enc_addr_out <= enc_addr_s;
-    PC2_out <= PC2_s;
-    MA_st_out <= MA_st_s;
-    WB_st_out <= WB_st_s;
-    RF_WR_out <= RF_WR_s;
-
-    edit_process: process(clk, EX2MA_WR, reset_wr) is
-    begin
-        if(falling_edge(clk) and EX2MA_WR = '1') then
-            opcode_s <= opcode_in;
-            instr_11_9_s <= instr_11_9_in;
-            E9_output_s <= E9_output_in;
-            ALU_output_s <= ALU_output_in;
-            D2_output_s <= D2_output_in;
-            enc_addr_s <= enc_addr_in;
-            PC2_s <= PC2_in;
-            MA_st_s <= MA_st_in;
-            WB_st_s <= WB_st_in;
-            RF_WR_s <= RF_WR_in;
-		end if;
-		if (falling_edge(clk) and reset_wr = '1') then
-            MA_st_s(2) <= '0'; --DATA_MEM_WR
-            RF_WR_s <= '0';
-        end if; 
-    end process edit_process;
-end architecture bhv4;
 
 --------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------NEW COMPONENT-----------------------------------------
@@ -657,7 +487,7 @@ entity ID2ORreg is
 	port (
 			---------------------------------inputs
 			clk, ID2OR_WR: in std_logic;
-            reset_wr: in std_logic;
+            reset_wr: in std_logic; 
             opcode_in: in std_logic_vector(5 downto 0);
             instr_11_9_in : in std_logic_vector(2 downto 0); 
             instr_8_6_in : in std_logic_vector(2 downto 0); 
@@ -979,7 +809,7 @@ use ieee.numeric_std.all;
 library Work;
 entity alpha is
 	port (
-			input,clk: in std_logic;
+			input, clk: in std_logic;
 			output: out std_logic);
 end entity alpha;
 
@@ -1263,22 +1093,19 @@ architecture bhv1 of IF2IDreg is
 		begin
 			if(falling_edge(clk)) then
 				if (IF2ID_WR = '1')then
-				IMdatas <= IMdata;
-				pcs <= pc;
-				pc2s <= pc2; 
-				
+					IMdatas <= IMdata;
+					pcs <= pc;
+					pc2s <= pc2; 
 				else 
-				IMdatas <= IMdatas;
-				pcs<=pcs;
-				pc2s<=pc2s;
+					IMdatas <= IMdatas;
+					pcs<=pcs;
+					pc2s<=pc2s;
 				end if;
-				
-				else 
+			else 
 				IMdatas <= IMdatas;
 				pcs<=pcs;
 				pc2s<=pc2s;
 			end if;
-			
 		end process;
 end architecture bhv1;
 
@@ -1296,21 +1123,14 @@ entity branch_predictor is
 	generic (
 		addrSize    : integer   := 16;
 		tableSize   : integer   := 64);
-	-- port(
+	port(
 		in_IF, in_EXE, in_pred, in_EXE2: in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
-		opcode_IF, opcode_EXE: in std_logic_vector(5 downto 0);
+		opcode_EXE: in std_logic_vector(5 downto 0);
 		hb_in: in std_logic; -- input for history bit to write to this table
 		out_IF, out_EXE: out std_logic_vector(15 downto 0); -- prediction output or correction to branch
 		branch: out std_logic; -- whether to branch or not
 		reset_wr: out std_logic); -- whether prediction was wrong or not
-	port(
-		IF_IM_in, EX_IM_in, update_PC, : in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
-		EX_opcode: in std_logic_vector(5 downto 0);
-		hb_in: in std_logic; -- input for history bit to write to this table
-		Prediction: out std_logic_vector(15 downto 0); -- prediction output or correction to branch
-		BP_control: out std_logic -- whether to branch or not
-		); -- whether prediction was wrong or not
-		end branch_predictor;
+end branch_predictor;
 
 architecture predict of branch_predictor is
 	
@@ -1322,33 +1142,29 @@ architecture predict of branch_predictor is
 	 
 begin
 
-	IF_proc: process(in_IF, in_EXE, in_EXE2, hb_in, in_pred, opcode_IF, opcode_EXE) is
+	IF_proc: process(in_IF, in_EXE, in_EXE2, hb_in, in_pred, opcode_EXE) is
 		variable found: std_logic := '0';
+		variable index: integer := 0;
 	begin
-		--check for branching opcode first
-		if(opcode_IF(5) = '1' and (((opcode_IF(3) = '0') and (opcode_IF(2) = '0')) or ((opcode_IF(4) = '0') and opcode_IF(2) = '1'))) then
-			searchLUTIF: for i in tableSize-1 downto 0 loop
-				--check if instruction in LUT
-				if(inputTable(i) = in_IF) then
-					-- check if HB = 1
-					if(historyBit(i) = '1') then
-						branch <= '1';
-						out_IF <= predTable(i);
-					else 
-						branch <= '0';
-						out_IF <= "0000000000000000";
-					end if;
-					EXIT searchLUTIF;
-				else
+
+		searchLUTIF: for i in tableSize-1 downto 0 loop
+			--check if instruction in LUT
+			if(inputTable(i) = in_IF) then
+				-- check if HB = 1
+				if(historyBit(i) = '1') then
+					branch <= '1';
+					out_IF <= predTable(i);
+				else 
 					branch <= '0';
 					out_IF <= "0000000000000000";
 				end if;
-			end loop searchLUTIF;
-		else
-			branch <= '0';
-			out_IF <= "0000000000000000";
-		end if;
-
+				EXIT searchLUTIF;
+			else
+				branch <= '0';
+				out_IF <= "0000000000000000";
+			end if;
+		end loop searchLUTIF;
+		
 		------------------Now we check for EXE stage-------------------------				
 
 		--check for branching opcode first
@@ -1356,16 +1172,7 @@ begin
 			searchLUTEXE: for j in tableSize-1 downto 0 loop
 				--check if instruction in LUT
 				if(inputTable(j) = in_EXE) then
-					-- check if instruction has confirmed branched
-					if(hb_in = '1') then 
-						reset_wr <= not(historyBit(j));
-						out_EXE <= in_pred;
-						historyBit(j) <= '1';
-					else 
-						reset_wr <= historyBit(j);
-						out_EXE <= in_EXE2;
-						historyBit(j) <='0';
-					end if;
+					index := j;
 					found := '1';
 					EXIT searchLUTEXE;
 				else
@@ -1378,15 +1185,30 @@ begin
 					inputTable(head) <= in_EXE;
 					predTable(head) <= in_pred;
 					historyBit(head) <= '1';
+					out_EXE <= in_pred;
+					reset_wr <= '1';
 				else
 					inputTable(head) <= in_EXE;
 					predTable(head) <= in_pred;
 					historyBit(head) <= '0';
+					out_EXE <= "0000000000000000";
+					reset_wr <= '0';
 				end if;
 				if(head = 0) then
 					head := tableSize-1;
 				else
 					head := head - 1;
+				end if;
+			else
+				-- check if instruction has confirmed branched
+				if(hb_in = '1') then 
+					reset_wr <= not(historyBit(index));
+					out_EXE <= in_pred;
+					historyBit(index) <= '1';
+				else 
+					reset_wr <= historyBit(index);
+					out_EXE <= in_EXE2;
+					historyBit(index) <='0';
 				end if;
 			end if;
 		else
@@ -1395,9 +1217,7 @@ begin
 		end if;
 	end process IF_proc;
 			
-end predict;
-
-
+end predict;	
 --------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------NEW COMPONENT-----------------------------------------
 --------------------------------------------------------------DON'T BLINK-------------------------------------------
@@ -1564,16 +1384,17 @@ entity prog_reg is
 			D3: in std_logic_vector(15 downto 0);
 			PC_in: in std_logic_vector(15 downto 0);
 			PC_out: out std_logic_vector(15 downto 0);
-			PC_enable: in std_logic;
+			PC_wr: in std_logic;
 			clk: in std_logic;
-			w_enable: in std_logic);
+			RF_WR: in std_logic;
+			reset: in std_logic);
 end entity prog_reg;
 
 architecture pr of prog_reg is
 	-- These signals dictate which registers are allowed to be written
-	signal e0, e1, e2, e3, e4, e5, e6,  e7: std_logic;
+	signal e0, e1, e2, e3, e4, e5, e6,  e7, e_actual_PC: std_logic;
 	-- These signals carry the output from each register
-	signal r0, r1, r2, r3, r4, r5, r6, r7: std_logic_vector(15 downto 0);
+	signal r0, r1, r2, r3, r4, r5, r6, r7, PC_actual_input, PC_real_input: std_logic_vector(15 downto 0);
 begin
 
 	-- Assign signals to control write enable for individual registers
@@ -1585,9 +1406,18 @@ begin
 	e5 <= w_enable and (A3(2)) and not(A3(1)) and (A3(0));
 	e6 <= w_enable and (A3(2)) and (A3(1)) and not(A3(0));
 	e7 <= w_enable and (A3(2)) and (A3(1)) and (A3(0));
+
+	PC_input_MUX: component mux_2_1
+		port map(D3, PC_in, PC_WR, PC_actual_input);
+	
+	reset_MUX: component mux_2_1
+		port map(PC_actual_input, "0000000000000000", reset, PC_real_input); -- real >> actual
+
+	e_PC_MUX: component mux_2_1
+		port map(e0, PC_WR, PC_WR, e_actual_PC);
 	
 	-- Initialise the registers
-	reg0: T_reg port map (input => D3, w_enable => e0, clk => clk, output => r0);
+	reg0: T_reg port map (input => PC_real_input, w_enable => (e_actual_PC or reset), clk => clk, output => r0);
 	reg1: T_reg port map (input => D3, w_enable => e1, clk => clk, output => r1);
 	reg2: T_reg port map (input => D3, w_enable => e2, clk => clk, output => r2);
 	reg3: T_reg port map (input => D3, w_enable => e3, clk => clk, output => r3);
@@ -1620,7 +1450,7 @@ begin
 	writePC: process(clk) is
 	begin
 		if(falling_edge(clk)) then
-			if(PC_enable = '1') then 
+			if(PC_WR = '1' and (not A3 = "000")) then 
 				r0 <= PC_in;
 			end if;
 		end if;
@@ -1672,6 +1502,7 @@ entity EX2MAreg is
             PC2_in : in std_logic_vector(15 downto 0);
             MA_st_in : in std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
             WB_st_in : in std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+			EX_c, EX_z: in std_logic;
             RF_WR_in: in std_logic;
             ---------------------------------outputs
             opcode_out: out std_logic_vector(5 downto 0);
@@ -1683,6 +1514,7 @@ entity EX2MAreg is
             PC2_out : out std_logic_vector(15 downto 0);
             MA_st_out : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
             WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+			MA_c, MA_z: in std_logic;
             RF_WR_out: out std_logic
     );
 end entity EX2MAreg;
@@ -1694,6 +1526,7 @@ architecture bhv4 of EX2MAreg is
     signal MA_st_s: std_logic_vector(3 downto 0) := "0000";
     signal WB_st_s: std_logic_vector(1 downto 0) := "00";
     signal RF_WR_S: std_logic := '0';
+	signal c_s, z_s: std_logic :='0';
 begin
 
     opcode_out <= opcode_s;
@@ -1706,6 +1539,8 @@ begin
     MA_st_out <= MA_st_s;
     WB_st_out <= WB_st_s;
     RF_WR_out <= RF_WR_s;
+	MA_z<= z_s;
+	MA_c <= c_s;
 
     edit_process: process(clk, EX2MA_WR, reset_wr) is
     begin
@@ -1720,6 +1555,8 @@ begin
             MA_st_s <= MA_st_in;
             WB_st_s <= WB_st_in;
             RF_WR_s <= RF_WR_in;
+			c_s <= EX_c;
+			z_s <= EX_z;
 		end if;
 		if (falling_edge(clk) and reset_wr = '1') then
             MA_st_s(2) <= '0'; --DATA_MEM_WR
@@ -1792,8 +1629,10 @@ architecture bhv2 of ID2ORreg is
     signal WB_st_s: std_logic_vector(1 downto 0) := "00";
     signal RF_WR_S: std_logic := '0';
     signal alpha_s: std_logic := '0';
+	signal rf_write_s: std_logic := '1';
 begin
-
+	rf_write_latch: component alpha
+		port map(rf_write, clk, rf_write_s);
     opcode_out <= opcode_s;
     instr_11_9_out <= instr_11_9_s;
     instr_8_6_out <= instr_8_6_s;
@@ -1836,7 +1675,7 @@ begin
             RF_WR_s <= RF_WR_in;
             alpha_s <= ID_alpha;
 		end if;
-		if (falling_edge(clk) and reset_wr = '1') then
+		if (reset_wr_s = '1') then
             MA_st_s(2) <= '0'; --DATA_MEM_WR
             RF_WR_s <= '0';
         end if; 
@@ -1978,9 +1817,11 @@ architecture bhv3 of OR2EXreg is
     signal MA_st_s: std_logic_vector(3 downto 0) := "0000";
     signal WB_st_s: std_logic_vector(1 downto 0) := "00";
     signal RF_WR_S: std_logic := '0';
-    --signal c_s, z_s: std_logic := '0';
+    signal rf_write_s: std_logic := '1';
+	
 begin
-
+	rf_write_latch: component alpha
+		port map(rf_write, clk, rf_write_s);
     opcode_out <= opcode_s;
     instr_11_9_out <= instr_11_9_s;
     E9_output_out <= E9_output_s;
@@ -2019,7 +1860,7 @@ begin
             --c_s<=c;
             --z_s<=z;
 		end if;
-		if (falling_edge(clk) and reset_wr = '1') then
+		if (reset_wr_s = '1') then
             MA_st_s(2) <= '0'; --DATA_MEM_WR
             RF_WR_s <= '0';
         end if; 

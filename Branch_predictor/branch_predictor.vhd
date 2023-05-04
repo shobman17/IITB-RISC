@@ -8,7 +8,7 @@ entity branch_predictor is
 		tableSize   : integer   := 64);
 	port(
 		in_IF, in_EXE, in_pred, in_EXE2: in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
-		opcode_IF, opcode_EXE: in std_logic_vector(5 downto 0);
+		opcode_EXE: in std_logic_vector(5 downto 0);
 		hb_in: in std_logic; -- input for history bit to write to this table
 		out_IF, out_EXE: out std_logic_vector(15 downto 0); -- prediction output or correction to branch
 		branch: out std_logic; -- whether to branch or not
@@ -25,33 +25,29 @@ architecture predict of branch_predictor is
 	 
 begin
 
-	IF_proc: process(in_IF, in_EXE, in_EXE2, hb_in, in_pred, opcode_IF, opcode_EXE) is
+	IF_proc: process(in_IF, in_EXE, in_EXE2, hb_in, in_pred, opcode_EXE) is
 		variable found: std_logic := '0';
+		variable index: integer := 0;
 	begin
-		--check for branching opcode first
-		if(opcode_IF(5) = '1' and (((opcode_IF(3) = '0') and (opcode_IF(2) = '0')) or ((opcode_IF(4) = '0') and opcode_IF(2) = '1'))) then
-			searchLUTIF: for i in tableSize-1 downto 0 loop
-				--check if instruction in LUT
-				if(inputTable(i) = in_IF) then
-					-- check if HB = 1
-					if(historyBit(i) = '1') then
-						branch <= '1';
-						out_IF <= predTable(i);
-					else 
-						branch <= '0';
-						out_IF <= "0000000000000000";
-					end if;
-					EXIT searchLUTIF;
-				else
+
+		searchLUTIF: for i in tableSize-1 downto 0 loop
+			--check if instruction in LUT
+			if(inputTable(i) = in_IF) then
+				-- check if HB = 1
+				if(historyBit(i) = '1') then
+					branch <= '1';
+					out_IF <= predTable(i);
+				else 
 					branch <= '0';
 					out_IF <= "0000000000000000";
 				end if;
-			end loop searchLUTIF;
-		else
-			branch <= '0';
-			out_IF <= "0000000000000000";
-		end if;
-
+				EXIT searchLUTIF;
+			else
+				branch <= '0';
+				out_IF <= "0000000000000000";
+			end if;
+		end loop searchLUTIF;
+		
 		------------------Now we check for EXE stage-------------------------				
 
 		--check for branching opcode first
@@ -59,16 +55,7 @@ begin
 			searchLUTEXE: for j in tableSize-1 downto 0 loop
 				--check if instruction in LUT
 				if(inputTable(j) = in_EXE) then
-					-- check if instruction has confirmed branched
-					if(hb_in = '1') then 
-						reset_wr <= not(historyBit(j));
-						out_EXE <= in_pred;
-						historyBit(j) <= '1';
-					else 
-						reset_wr <= historyBit(j);
-						out_EXE <= in_EXE2;
-						historyBit(j) <='0';
-					end if;
+					index := j;
 					found := '1';
 					EXIT searchLUTEXE;
 				else
@@ -81,15 +68,30 @@ begin
 					inputTable(head) <= in_EXE;
 					predTable(head) <= in_pred;
 					historyBit(head) <= '1';
+					out_EXE <= in_pred;
+					reset_wr <= '1';
 				else
 					inputTable(head) <= in_EXE;
 					predTable(head) <= in_pred;
 					historyBit(head) <= '0';
+					out_EXE <= "0000000000000000";
+					reset_wr <= '0';
 				end if;
 				if(head = 0) then
 					head := tableSize-1;
 				else
 					head := head - 1;
+				end if;
+			else
+				-- check if instruction has confirmed branched
+				if(hb_in = '1') then 
+					reset_wr <= not(historyBit(index));
+					out_EXE <= in_pred;
+					historyBit(index) <= '1';
+				else 
+					reset_wr <= historyBit(index);
+					out_EXE <= in_EXE2;
+					historyBit(index) <='0';
 				end if;
 			end if;
 		else

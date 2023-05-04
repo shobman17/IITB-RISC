@@ -1,0 +1,417 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "PC_out[0]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[1]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[2]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[3]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[4]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[5]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[6]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[7]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[8]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[9]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[10]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[11]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[12]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[13]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[14]",
+					"strict" : false
+				},
+				{
+					"name" : "PC_out[15]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[0]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[0]",
+					"strict" : false
+				},
+				{
+					"name" : "branch",
+					"strict" : false
+				},
+				{
+					"name" : "opcode_EXE[2]",
+					"strict" : false
+				},
+				{
+					"name" : "opcode_EXE[4]",
+					"strict" : false
+				},
+				{
+					"name" : "opcode_EXE[5]",
+					"strict" : false
+				},
+				{
+					"name" : "opcode_EXE[3]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[0]",
+					"strict" : false
+				},
+				{
+					"name" : "reset_wr",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[0]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[0]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[1]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[1]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[1]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[1]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[1]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[2]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[2]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[2]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[2]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[2]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[3]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[3]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[3]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[3]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[3]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[4]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[4]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[4]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[4]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[4]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[5]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[5]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[5]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[5]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[5]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[6]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[6]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[6]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[6]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[6]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[7]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[7]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[7]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[7]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[7]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[8]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[8]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[8]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[8]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[8]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[9]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[9]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[9]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[9]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[9]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[10]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[10]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[10]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[10]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[10]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[11]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[11]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[11]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[11]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[11]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[12]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[12]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[12]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[12]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[12]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[13]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[13]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[13]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[13]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[13]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[14]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[14]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[14]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[14]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[14]",
+					"strict" : false
+				},
+				{
+					"name" : "Adder_out[15]",
+					"strict" : false
+				},
+				{
+					"name" : "out_EXE[15]",
+					"strict" : false
+				},
+				{
+					"name" : "out_IF[15]",
+					"strict" : false
+				},
+				{
+					"name" : "PC2[15]",
+					"strict" : false
+				},
+				{
+					"name" : "D1_out[15]",
+					"strict" : false
+				}
+			]
+		}
+	]
+}
