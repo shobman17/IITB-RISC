@@ -391,6 +391,12 @@ package Components is
 				w_enable, clk: in std_logic;
 				output: out std_logic_vector(15 downto 0));
 	end component T_reg;
+	
+	component subtractor is 
+	port (input_addr: in std_logic_vector(2 downto 0);
+			input_immediate: in std_logic_vector(7 downto 0);
+			output: out std_logic_vector(7 downto 0));
+	end component subtractor;
 
 ---------------------------------------------------------------------------------------------------------
 -----------------------------------------REST-OF-THE-COMPONENTS------------------------------------------
@@ -399,6 +405,9 @@ package Components is
 
 end package Components;
 
+
+library ieee;
+use ieee.std_logic_1164.all;
 
 
 entity reverse_decoder_3to8 is

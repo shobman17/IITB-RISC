@@ -18,8 +18,8 @@ architecture trivial of DataPath is
 	for all: CZreg
 		use entity work.CZreg(bhv);
 	
-	for all: PC
-		use entity work.PC(update);
+	--for all: PC
+	--	use entity work.PC(update);
 	
 	for all: alpha
 		use entity work.alpha(update);
@@ -52,10 +52,10 @@ architecture trivial of DataPath is
 		use entity work.pc_mux(blackboxed5);
 		
 	for all: Lshifter6
-		use entity work.Leftshifter(yes);
+		use entity work.Lshifter6(yes);
 	
-	for all: Leftshifter9
-		use entity work.Leftshifter9(yes);
+	for all: Lshifter9
+		use entity work.Lshifter9(yes);
 		
 	for all: extender_nine
 		use entity work.extender_nine(major_extending);
@@ -106,25 +106,25 @@ architecture trivial of DataPath is
 		use entity work.OR2EXreg(bhv3);
 	
 	signal IF_IM_in, EX_IM_in, update_PC, IF_IM_out, EX_D1_MUX_out, EX_adder2_out, IF_BP_pred, IF_adder1_out, OR_adder1_out, EX_adder1_out,  MA_adder1_out, WB_adder1_out : std_logic_vector(15 downto 0):=(others=>'0');
-	signal clk, PC_WR, BP_control, PC_MUX_branch, hb_in, BR_WR: std_logic;
-	signal Mem_D1, OR_E9out, EX_E9out, MA_E9out, WB_E9out, WB_default, MA_out, Mem_D1, OR_SE6out, MA_SE6out, EX_D2_MUX_out : std_logic_vector(15 downto 0);
+	signal PC_WR, BP_control, PC_MUX_branch, hb_in, BR_WR: std_logic;
+	signal OR_E9out, EX_E9out, MA_E9out, WB_E9out, WB_default, MA_out, Mem_D1, OR_SE6out, MA_SE6out, EX_D2_MUX_out : std_logic_vector(15 downto 0);
 	signal ID_8_0, ID_LS9out, OR_LS9out, EX_LS9out : std_logic_vector(8 downto 0);
 	signal ID_5_0, ID_LS6out, OR_LS6out, EX_LS6out : std_logic_vector(5 downto 0);
 	signal ID_11_9, OR_11_9, ID_encoded, OR_encoded, A1_in, A2_in: std_logic_vector(2 downto 0);
 	signal ID_8_6, OR_8_6 : std_logic_vector(2 downto 0);
 	signal ID_5_3, OR_5_3 : std_logic_vector(2 downto 0);
-	signal ID_2_0, OR_2_0, ID_encoded, OR_encoded: std_logic(2 downto 0);
+	signal ID_2_0, OR_2_0: std_logic_vector(2 downto 0);
 	signal updated_imm, subtractor_out, subtractor_in: std_logic_vector(7 downto 0);
 	signal alu_ain, alu_bin, adder2_ain, adder2_bin : std_logic_vector(15 downto 0);
 	signal RF_writeback, EX_ALU_out, MA_ALU_out : std_logic_vector(15 downto 0);
 	signal c_o, z_o, alu_carry, EX_c : std_logic;
 	signal D1, D2, OR_D1_MUX_OUT, OR_D2_MUX_OUT : std_logic_vector(15 downto 0);
 	signal out_IF, out_EXE: std_logic_vector(15 downto 0);
-	signal branch: std_logic;
+	signal branch, bb_PC_wr_suggestion: std_logic;
 
 	signal IF2ID_WR: std_logic;
 
-	signal ID_IM_out, ID_IM_in, OR_IM_in, EX_IM_in, IF_IM_in, ID_adder1_out: std_logic_vector(15 downto 0):=(others=>'0');	
+	signal ID_IM_out, ID_IM_in, OR_IM_in, ID_adder1_out: std_logic_vector(15 downto 0):=(others=>'0');	
 	signal if2id_wr_and_a, singular_one, alpha_update, n_alpha_update, ID_alpha, OR_alpha, if_LMSM: std_logic;
     
 	--signal alu_a, alu_b, alu_out, s1_0, s1_10, s2_0, s2_1, s3_0, s3_1, s4_0, s4_1, s5_0, s5_1, d1, d2, d3, e8_out, se6_out, L7_out, m_a, m_in, m_out: std_logic_vector(15 downto 0):=(others=>'0');
@@ -144,10 +144,9 @@ architecture trivial of DataPath is
 			port map(bb_PC_wr_suggestion, singular_one, PC_WR);
 		
 		InstructionMemory: component Memory_Code
-			port map(clk, IF_IM_in, IF_IM_out);
+			port map(clk, '0', IF_IM_in, IF_IM_out);
 			
-		PC_MUX: component pc_mux
-			port map(IF_adder1_out, EX_D1_MUX_out, EX_adder2_out, out_IF, out_EXE, EX_opcode, branch, bb_reset_wr, update_PC);
+s			port map(IF_adder1_out, EX_D1_MUX_out, EX_adder2_out, out_IF, out_EXE, EX_opcode, branch, bb_reset_wr, update_PC);
 		
 		BranchPredictor: component branch_predictor
 			port map(IF_IM_in, EX_IM_in, EX_adder2_out, EX_adder1_out, EX_opcode, hb_in, out_IF, out_EXE, branch, bb_reset_wr);
