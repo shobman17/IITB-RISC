@@ -18,8 +18,8 @@ architecture trivial of DataPath is
 	for all: CZreg
 		use entity work.CZreg(bhv);
 	
-	for all: PC
-		use entity work.PC(update);
+--	for all: PC
+--		use entity work.PC(update);
 	
 	for all: alpha
 		use entity work.alpha(update);
