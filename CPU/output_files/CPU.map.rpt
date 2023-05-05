@@ -1,5 +1,5 @@
 Analysis & Synthesis report for CPU
-Fri May 05 17:02:37 2023
+Fri May 05 18:47:49 2023
 Quartus Prime Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
 
 
@@ -37,7 +37,7 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Failed - Fri May 05 17:02:36 2023           ;
+; Analysis & Synthesis Status        ; Failed - Fri May 05 18:47:49 2023           ;
 ; Quartus Prime Version              ; 20.1.1 Build 720 11/11/2020 SJ Lite Edition ;
 ; Revision Name                      ; CPU                                         ;
 ; Top-level Entity Name              ; DataPath                                    ;
@@ -164,78 +164,83 @@ https://fpgasoftware.intel.com/eula.
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
-    Info: Processing started: Fri May 05 17:02:26 2023
+    Info: Processing started: Fri May 05 18:47:40 2023
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off CPU -c CPU
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
 Info (12021): Found 2 design units, including 1 entities, in source file cpu_tb.vhd
     Info (12022): Found design unit 1: CPU_tb-bhv File: C:/Users/aryav/Desktop/IITB-RISC/CPU/CPU_tb.vhd Line: 7
     Info (12023): Found entity 1: CPU_tb File: C:/Users/aryav/Desktop/IITB-RISC/CPU/CPU_tb.vhd Line: 4
-Info (12021): Found 64 design units, including 32 entities, in source file components.vhdl
-    Info (12022): Found design unit 1: reverse_decoder_3to8-dec File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 10
-    Info (12022): Found design unit 2: custom_encoder-enc File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 31
-    Info (12022): Found design unit 3: subtractor-sub File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 62
-    Info (12022): Found design unit 4: T_reg-bhv File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 97
-    Info (12022): Found design unit 5: extender_nine-major_extending File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 122
-    Info (12022): Found design unit 6: Lshifter6-multiply_by_two File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 147
-    Info (12022): Found design unit 7: Lshifter9-multiply_by_two File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 171
-    Info (12022): Found design unit 8: bbD1-blackboxed File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 197
-    Info (12022): Found design unit 9: bbD2-blackboxed2 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 239
-    Info (12022): Found design unit 10: bb_cwr_zwr-blackboxed3 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 280
-    Info (12022): Found design unit 11: bb_branching-blackboxed4 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 340
-    Info (12022): Found design unit 12: pc_mux-blackboxed5 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 376
-    Info (12022): Found design unit 13: ALU_unit_cell-unit File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 411
-    Info (12022): Found design unit 14: ALU-addnand File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 446
-    Info (12022): Found design unit 15: ADDER_unit_cell-unit File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 482
-    Info (12022): Found design unit 16: ADDER-add File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 523
-    Info (12022): Found design unit 17: alpha-update File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 565
-    Info (12022): Found design unit 18: CZreg-bhv File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 595
-    Info (12022): Found design unit 19: mux_2_1-Structer File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 634
-    Info (12022): Found design unit 20: mux_4_1-Structer4 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 665
-    Info (12022): Found design unit 21: mux51-Structer5 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 698
-    Info (12022): Found design unit 22: Memory_Code-memorykakaam File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 733
-    Info (12022): Found design unit 23: Memory_Data-memorykakaam File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 762
-    Info (12022): Found design unit 24: IF2IDreg-bhv1 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 798
-    Info (12022): Found design unit 25: branch_predictor-predict File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 850
-    Info (12022): Found design unit 26: controller-dictator File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 963
-    Info (12022): Found design unit 27: prog_reg-pr File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1063
-    Info (12022): Found design unit 28: signed_extender-ext File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1158
-    Info (12022): Found design unit 29: EX2MAreg-bhv4 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1208
-    Info (12022): Found design unit 30: ID2ORreg-bhv2 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1307
-    Info (12022): Found design unit 31: MA2WBreg-bhv5 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1412
-    Info (12022): Found design unit 32: OR2EXreg-bhv3 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1505
-    Info (12023): Found entity 1: reverse_decoder_3to8 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 5
-    Info (12023): Found entity 2: custom_encoder File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 25
-    Info (12023): Found entity 3: subtractor File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 56
-    Info (12023): Found entity 4: T_reg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 91
-    Info (12023): Found entity 5: extender_nine File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 117
-    Info (12023): Found entity 6: Lshifter6 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 142
-    Info (12023): Found entity 7: Lshifter9 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 166
-    Info (12023): Found entity 8: bbD1 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 189
-    Info (12023): Found entity 9: bbD2 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 231
-    Info (12023): Found entity 10: bb_cwr_zwr File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 273
-    Info (12023): Found entity 11: bb_branching File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 334
-    Info (12023): Found entity 12: pc_mux File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 367
-    Info (12023): Found entity 13: ALU_unit_cell File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 404
-    Info (12023): Found entity 14: ALU File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 437
-    Info (12023): Found entity 15: ADDER_unit_cell File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 476
-    Info (12023): Found entity 16: ADDER File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 514
-    Info (12023): Found entity 17: alpha File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 559
-    Info (12023): Found entity 18: CZreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 589
-    Info (12023): Found entity 19: mux_2_1 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 628
-    Info (12023): Found entity 20: mux_4_1 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 659
-    Info (12023): Found entity 21: mux51 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 692
-    Info (12023): Found entity 22: Memory_Code File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 725
-    Info (12023): Found entity 23: Memory_Data File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 754
-    Info (12023): Found entity 24: IF2IDreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 791
-    Info (12023): Found entity 25: branch_predictor File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 837
-    Info (12023): Found entity 26: controller File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 944
-    Info (12023): Found entity 27: prog_reg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1051
-    Info (12023): Found entity 28: signed_extender File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1153
-    Info (12023): Found entity 29: EX2MAreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1177
-    Info (12023): Found entity 30: ID2ORreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1262
-    Info (12023): Found entity 31: MA2WBreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1385
-    Info (12023): Found entity 32: OR2EXreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1464
+Info (12021): Found 69 design units, including 34 entities, in source file components.vhdl
+    Info (12022): Found design unit 1: Components File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 9
+    Info (12022): Found design unit 2: reverse_decoder_3to8-dec File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 434
+    Info (12022): Found design unit 3: custom_encoder-enc File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 455
+    Info (12022): Found design unit 4: subtractor-sub File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 486
+    Info (12022): Found design unit 5: T_reg-bhv File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 521
+    Info (12022): Found design unit 6: extender_nine-major_extending File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 546
+    Info (12022): Found design unit 7: Lshifter6-multiply_by_two File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 571
+    Info (12022): Found design unit 8: Lshifter9-multiply_by_two File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 595
+    Info (12022): Found design unit 9: bbD1-blackboxed File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 621
+    Info (12022): Found design unit 10: bbD2-blackboxed2 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 663
+    Info (12022): Found design unit 11: bb_cwr_zwr-blackboxed3 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 704
+    Info (12022): Found design unit 12: bb_branching-blackboxed4 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 764
+    Info (12022): Found design unit 13: pc_mux-blackboxed5 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 800
+    Info (12022): Found design unit 14: ALU_unit_cell-unit File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 835
+    Info (12022): Found design unit 15: ALU-addnand File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 870
+    Info (12022): Found design unit 16: ADDER_unit_cell-unit File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 906
+    Info (12022): Found design unit 17: ADDER-add File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 947
+    Info (12022): Found design unit 18: alpha-update File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 989
+    Info (12022): Found design unit 19: CZreg-bhv File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1019
+    Info (12022): Found design unit 20: mux_2_1-Structer File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1058
+    Info (12022): Found design unit 21: mux_2_1_3-Structer File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1087
+    Info (12022): Found design unit 22: mux_4_1-Structer4 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1118
+    Info (12022): Found design unit 23: mux_4_1_1-Structer4 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1151
+    Info (12022): Found design unit 24: mux51-Structer5 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1185
+    Info (12022): Found design unit 25: Memory_Code-memorykakaam File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1220
+    Info (12022): Found design unit 26: Memory_Data-memorykakaam File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1249
+    Info (12022): Found design unit 27: IF2IDreg-bhv1 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1285
+    Info (12022): Found design unit 28: branch_predictor-predict File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1337
+    Info (12022): Found design unit 29: controller-dictator File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1450
+    Info (12022): Found design unit 30: prog_reg-pr File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1550
+    Info (12022): Found design unit 31: signed_extender-ext File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1645
+    Info (12022): Found design unit 32: EX2MAreg-bhv4 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1695
+    Info (12022): Found design unit 33: ID2ORreg-bhv2 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1794
+    Info (12022): Found design unit 34: MA2WBreg-bhv5 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1899
+    Info (12022): Found design unit 35: OR2EXreg-bhv3 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1992
+    Info (12023): Found entity 1: reverse_decoder_3to8 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 429
+    Info (12023): Found entity 2: custom_encoder File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 449
+    Info (12023): Found entity 3: subtractor File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 480
+    Info (12023): Found entity 4: T_reg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 515
+    Info (12023): Found entity 5: extender_nine File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 541
+    Info (12023): Found entity 6: Lshifter6 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 566
+    Info (12023): Found entity 7: Lshifter9 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 590
+    Info (12023): Found entity 8: bbD1 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 613
+    Info (12023): Found entity 9: bbD2 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 655
+    Info (12023): Found entity 10: bb_cwr_zwr File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 697
+    Info (12023): Found entity 11: bb_branching File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 758
+    Info (12023): Found entity 12: pc_mux File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 791
+    Info (12023): Found entity 13: ALU_unit_cell File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 828
+    Info (12023): Found entity 14: ALU File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 861
+    Info (12023): Found entity 15: ADDER_unit_cell File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 900
+    Info (12023): Found entity 16: ADDER File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 938
+    Info (12023): Found entity 17: alpha File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 983
+    Info (12023): Found entity 18: CZreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1013
+    Info (12023): Found entity 19: mux_2_1 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1052
+    Info (12023): Found entity 20: mux_2_1_3 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1081
+    Info (12023): Found entity 21: mux_4_1 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1112
+    Info (12023): Found entity 22: mux_4_1_1 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1145
+    Info (12023): Found entity 23: mux51 File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1179
+    Info (12023): Found entity 24: Memory_Code File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1212
+    Info (12023): Found entity 25: Memory_Data File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1241
+    Info (12023): Found entity 26: IF2IDreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1278
+    Info (12023): Found entity 27: branch_predictor File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1324
+    Info (12023): Found entity 28: controller File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1431
+    Info (12023): Found entity 29: prog_reg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1538
+    Info (12023): Found entity 30: signed_extender File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1640
+    Info (12023): Found entity 31: EX2MAreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1664
+    Info (12023): Found entity 32: ID2ORreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1749
+    Info (12023): Found entity 33: MA2WBreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1872
+    Info (12023): Found entity 34: OR2EXreg File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Components.vhdl Line: 1951
 Info (12021): Found 17 design units, including 8 entities, in source file gates.vhdl
     Info (12022): Found design unit 1: Gates File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Gates.vhdl Line: 7
     Info (12022): Found design unit 2: INVERTER-Equations File: C:/Users/aryav/Desktop/IITB-RISC/CPU/Gates.vhdl Line: 50
@@ -257,12 +262,12 @@ Info (12021): Found 17 design units, including 8 entities, in source file gates.
 Info (12021): Found 2 design units, including 1 entities, in source file datapath.vhd
     Info (12022): Found design unit 1: DataPath-trivial File: C:/Users/aryav/Desktop/IITB-RISC/CPU/DataPath.vhd Line: 13
     Info (12023): Found entity 1: DataPath File: C:/Users/aryav/Desktop/IITB-RISC/CPU/DataPath.vhd Line: 9
-Error (10481): VHDL Use Clause error at DataPath.vhd(5): design library "work" does not contain primary unit "Components". Verify that the primary unit exists in the library and has been successfully compiled. File: C:/Users/aryav/Desktop/IITB-RISC/CPU/DataPath.vhd Line: 5
-Error (10800): VHDL error at DataPath.vhd(5): selected name in use clause is not an expanded name File: C:/Users/aryav/Desktop/IITB-RISC/CPU/DataPath.vhd Line: 5
+Error (10476): VHDL error at DataPath.vhd(268): type of identifier "OR_alpha" does not agree with its usage as "std_logic_vector" type File: C:/Users/aryav/Desktop/IITB-RISC/CPU/DataPath.vhd Line: 268
+Error (10558): VHDL error at DataPath.vhd(268): cannot associate formal port "WB_st_out" of mode "out" with an expression File: C:/Users/aryav/Desktop/IITB-RISC/CPU/DataPath.vhd Line: 268
 Error: Quartus Prime Analysis & Synthesis was unsuccessful. 2 errors, 1 warning
-    Error: Peak virtual memory: 4779 megabytes
-    Error: Processing ended: Fri May 05 17:02:37 2023
-    Error: Elapsed time: 00:00:11
-    Error: Total CPU time (on all processors): 00:00:11
+    Error: Peak virtual memory: 4771 megabytes
+    Error: Processing ended: Fri May 05 18:47:49 2023
+    Error: Elapsed time: 00:00:09
+    Error: Total CPU time (on all processors): 00:00:07
 
 
