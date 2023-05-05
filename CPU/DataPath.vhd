@@ -7,7 +7,8 @@ use work.Gates.all;
 
 
 entity DataPath is
-	port(clk, reset: in std_logic);
+	port(clk, reset: in std_logic;
+		output_datapath: out std_logic_vector(15 downto 0));
 end entity Datapath;
 
 architecture trivial of DataPath is
@@ -105,7 +106,7 @@ architecture trivial of DataPath is
 	for all: OR2EXreg
 		use entity work.OR2EXreg(bhv3);
 	
-	signal IF_IM_in, Mem_D3_in, EX_IM_in, update_PC, IF_IM_out, alu_out, EX_SE6out, EX_E9out, EX_D1_MUX_out, EX_adder2_out, IF_BP_pred, IF_adder1_out, OR_adder1_out, EX_adder1_out,  MA_adder1_out, WB_adder1_out : std_logic_vector(15 downto 0):=(others=>'0');
+	signal IF_IM_in, Mem_D3_in, EX_IM_in, update_PC, IF_IM_out, EX_SE6out, EX_E9out, EX_D1_MUX_out, EX_adder2_out, IF_BP_pred, IF_adder1_out, OR_adder1_out, EX_adder1_out,  MA_adder1_out, WB_adder1_out : std_logic_vector(15 downto 0):=(others=>'0');
 	signal PC_WR, BP_control, PC_MUX_branch, hb_in, BR_WR: std_logic;
 	signal OR_E9out, MA_E9out, WB_E9out, WB_default, MA_out, Mem_D1, OR_SE6out, MA_SE6out, EX_D2_MUX_out : std_logic_vector(15 downto 0);
 	signal ID_8_0, OR_8_0 : std_logic_vector(8 downto 0);
@@ -195,11 +196,19 @@ architecture trivial of DataPath is
 		lshift9: component LShifter9
 			port map(ID_8_0, ID_LS9out);
 		
-		mux_rf_a1: component mux_2_1_3
-			port map(OR_8_6, OR_encoded, OR_controls(1), A1_in);
-			
-		mux_rf_a2: component mux_2_1_3
-			port map(OR_5_3, OR_11_9, OR_controls(2), A2_in);
+		with OR_controls(1) select
+			A1_in <=OR_8_6 when '0',
+						OR_encoded when '1';
+		
+--		mux_rf_a1: component mux_2_1_3
+--			port map(OR_8_6, OR_encoded, OR_controls(1), A1_in);
+		
+		with OR_controls(2) select
+			A2_in <= OR_5_3 when '0',
+						OR_11_9 when '1';
+	
+--		mux_rf_a2: component mux_2_1_3
+--			port map(OR_5_3, OR_11_9, OR_controls(2), A2_in);
 		
 		reg_file: component prog_reg
 			port map(A1_in, A2_in, A3, D1, D2, RF_writeback, update_PC, IF_IM_in, PC_WR, clk, WB_RF_WR, reset);
@@ -226,7 +235,7 @@ architecture trivial of DataPath is
 			port map(OR_5_0, OR_SE6out);
 			
 		DataMemory: component Memory_Data	
-			port map(clk, MA_controls(1), MA_controls(2), MA_ALU_out, Mem_D3_in, Mem_D1);
+			port map(clk, MA_controls(1), MA_controls(2), MA_ALU_out, Mem_D3_in, Mem_D1, output_datapath);
 		
 		mux_alu_a: component mux_4_1
 			port map(EX_D1_MUX_out, "0000000000000000", "0000000000000010", "0000000000000010", EX_controls(8), EX_controls(9), alu_ain);
@@ -238,7 +247,7 @@ architecture trivial of DataPath is
 			port map('0', EX_c, EX_c, '1', EX_controls(6), EX_controls(5), alu_carry);
 		
 		alu_comp: component alu
-			port map(alu_ain, alu_bin, EX_controls(4), EX_controls(3), alu_carry, alu_out, z_o, c_o);
+			port map(alu_ain, alu_bin, EX_controls(4), EX_controls(3), alu_carry, EX_alu_out, z_o, c_o);
 			
 		CZFlags: component CZreg
 			port map(c_o, z_o, clk, c_wr, z_wr, EX_c, EX_z);
@@ -259,9 +268,13 @@ architecture trivial of DataPath is
 			port map(c_o, z_o, EX_opcode, hb_in);
 
 		A3_mux_select <= (not WB_opcode(5)) and WB_opcode(4) and WB_opcode(3) and (not WB_opcode(2));
-			
-		A3_MUX: component mux_2_1
-			port map(WB_11_9, WB_encoded, A3_mux_select, A3);
+		
+		with A3_mux_select select
+			A3 <= WB_11_9 when '0', 
+					WB_encoded when '1';
+					
+--		A3_MUX: component mux_2_1
+--			port map(WB_11_9, WB_encoded, A3_mux_select, A3);
 
 		bb_reset_all_zero <= bb_reset_wr or all_zeros;
 
@@ -353,7 +366,26 @@ architecture trivial of DataPath is
 						MA_RF_WR);
 
 		MA2WB: component MA2WBreg
-			port map(clk, '1', reset, MA_opcode, MA_11_9, MA_out, MA_E9out, MA_encoded, MA_adder1_out, MA_control_signals_WB, MA_RF_WR,
-			 WB_opcode, WB_11_9, WB_default, WB_E9out, WB_encoded, WB_adder1_out, WB_MUX, WB_RF_WR);
+			port map(
+			clk, '1',
+			reset, 
+			--inputs
+			MA_opcode, 
+			MA_11_9, 
+			MA_out, 
+			MA_E9out, 
+			MA_encoded, 
+			MA_adder1_out, 
+			MA_control_signals_WB, 
+			MA_RF_WR,
+			--outputs
+			 WB_opcode, 
+			 WB_11_9, 
+			 WB_default, 
+			 WB_E9out, 
+			 WB_encoded, 
+			 WB_adder1_out, 
+			 WB_MUX, 
+			 WB_RF_WR);
 
 end architecture trivial;

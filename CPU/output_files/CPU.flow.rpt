@@ -1,5 +1,5 @@
 Flow report for CPU
-Fri May 05 21:45:28 2023
+Sat May 06 03:38:55 2023
 Quartus Prime Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
 
 
@@ -41,7 +41,7 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Flow Summary                                                                     ;
 +------------------------------------+---------------------------------------------+
-; Flow Status                        ; Flow Failed - Fri May 05 21:45:28 2023      ;
+; Flow Status                        ; Successful - Sat May 06 03:38:55 2023       ;
 ; Quartus Prime Version              ; 20.1.1 Build 720 11/11/2020 SJ Lite Edition ;
 ; Revision Name                      ; CPU                                         ;
 ; Top-level Entity Name              ; DataPath                                    ;
@@ -67,7 +67,7 @@ https://fpgasoftware.intel.com/eula.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 05/05/2023 21:45:19 ;
+; Start date & time ; 05/06/2023 03:34:56 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; CPU                 ;
 +-------------------+---------------------+
@@ -78,7 +78,7 @@ https://fpgasoftware.intel.com/eula.
 +--------------------------------------+----------------------------------------+---------------+-------------+-----------------------------------+
 ; Assignment Name                      ; Value                                  ; Default Value ; Entity Name ; Section Id                        ;
 +--------------------------------------+----------------------------------------+---------------+-------------+-----------------------------------+
-; COMPILER_SIGNATURE_ID                ; 10995770589195.168330331905932         ; --            ; --          ; --                                ;
+; COMPILER_SIGNATURE_ID                ; 79846627254421.168332429513060         ; --            ; --          ; --                                ;
 ; EDA_DESIGN_INSTANCE_NAME             ; dut_instance                           ; --            ; --          ; CPU_tb.vhd                        ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST      ; Off                                    ; --            ; --          ; eda_board_design_timing           ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST      ; Off                                    ; --            ; --          ; eda_board_design_boundary_scan    ;
@@ -111,8 +111,8 @@ https://fpgasoftware.intel.com/eula.
 +------------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name            ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Elaboration ; 00:00:09     ; 1.0                     ; 4784 MB             ; 00:00:12                           ;
-; Total                  ; 00:00:09     ; --                      ; --                  ; 00:00:12                           ;
+; Analysis & Elaboration ; 00:04:00     ; 1.0                     ; 10681 MB            ; 00:01:54                           ;
+; Total                  ; 00:04:00     ; --                      ; --                  ; 00:01:54                           ;
 +------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
@@ -121,7 +121,7 @@ https://fpgasoftware.intel.com/eula.
 +------------------------+------------------+------------+------------+----------------+
 ; Module Name            ; Machine Hostname ; OS Name    ; OS Version ; Processor type ;
 +------------------------+------------------+------------+------------+----------------+
-; Analysis & Elaboration ; Abhiruchi        ; Windows 10 ; 10.0       ; x86_64         ;
+; Analysis & Elaboration ; LAPTOP-Q8I3TMJT  ; Windows 10 ; 10.0       ; x86_64         ;
 +------------------------+------------------+------------+------------+----------------+
 
 
