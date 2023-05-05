@@ -110,21 +110,21 @@ package Components is
 
 	component controller is
 		port (instruction: in std_logic_vector(15 downto 0);
-				alpha : in std_logic;
+            alpha : in std_logic;
 				opcode : out std_logic_vector(5 downto 0);
-				instr_11_9 : out std_logic_vector(2 downto 0);
-				instr_8_6 : out std_logic_vector(2 downto 0);
-				instr_5_3 : out std_logic_vector(2 downto 0);
-				instr_2_0 : out std_logic_vector(2 downto 0);
-				instr_8_0 : out std_logic_vector(9 downto 0);
-				instr_5_0 : out std_logic_vector(6 downto 0);
-				instr_7_0 : out std_logic_vector(7 downto 0);
-				alpha_decode : out std_logic;
-				ID_st : out std_logic; -- ID2OR_WR
-				OR_st : out std_logic_vector(2 downto 0); -- OR2EX_WR, MUX_RF_A1, MUX_RF_A2
-				EX_st : out std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
-				MA_st : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
-				WB_st : out std_logic_vector(1 downto 0)); -- WB_MUX_1, WB_MUX_0
+            instr_11_9 : out std_logic_vector(2 downto 0);
+            instr_8_6 : out std_logic_vector(2 downto 0);
+            instr_5_3 : out std_logic_vector(2 downto 0);
+            instr_2_0 : out std_logic_vector(2 downto 0);
+            instr_7_0 : out std_logic_vector(7 downto 0);
+            instr_5_0 : out std_logic_vector(5 downto 0);
+            instr_8_0 : out std_logic_vector(8 downto 0);
+            alpha_decode : out std_logic;
+            ID_st : out std_logic; -- ID2OR_WR
+            OR_st : out std_logic_vector(2 downto 0); -- OR2EX_WR, MUX_RF_A1, MUX_RF_A2
+            EX_st : out std_logic_vector(10 downto 0); -- EX2MA_WR, MUX_ALU_A_0, MUX_ALU_A_1, MUX_ALU_B, ALU_CARRY_1, ALU_CARRY_0, ALU_OPER, ALU_COMPLEMENT, MUX_ADDER_A, MUX_ADDER_B_0, MUX_ADDER_B_1
+            MA_st : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
+            WB_st : out std_logic_vector(1 downto 0)); -- WB_MUX_1, WB_MUX_0
 	end component controller;
 
 
@@ -174,7 +174,7 @@ package Components is
 
 	component Memory_Code is 
 			port(
-					clk, m_wr: in std_logic; 
+					clk: in std_logic; 
 					mem_addr: in std_logic_vector(15 downto 0);
 					mem_out: out std_logic_vector(15 downto 0)
 				); 
@@ -231,28 +231,30 @@ package Components is
 		port (
 				---------------------------------inputs
 				clk, EX2MA_WR: in std_logic;
-				reset_wr: in std_logic;
-				opcode_in: in std_logic_vector(5 downto 0);
-				instr_11_9_in : in std_logic_vector(2 downto 0);
-				E9_output_in: in std_logic_vector(15 downto 0);
-				ALU_output_in: in std_logic_vector(15 downto 0);
-				D2_output_in: in std_logic_vector(15 downto 0); 
-				enc_addr_in : in std_logic_vector(2 downto 0); -- output from custom encoder
-				PC2_in : in std_logic_vector(15 downto 0);
-				MA_st_in : in std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
-				WB_st_in : in std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
-				RF_WR_in: in std_logic;
-				---------------------------------outputs
-				opcode_out: out std_logic_vector(5 downto 0);
-				instr_11_9_out : out std_logic_vector(2 downto 0);
-				E9_output_out: out std_logic_vector(15 downto 0);
-				ALU_output_out: out std_logic_vector(15 downto 0);
-				D2_output_out: out std_logic_vector(15 downto 0); 
-				enc_addr_out : out std_logic_vector(2 downto 0); -- output from custom encoder
-				PC2_out : out std_logic_vector(15 downto 0);
-				MA_st_out : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
-				WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
-				RF_WR_out: out std_logic
+            reset_wr: in std_logic;
+            opcode_in: in std_logic_vector(5 downto 0);
+            instr_11_9_in : in std_logic_vector(2 downto 0);
+            E9_output_in: in std_logic_vector(15 downto 0);
+            ALU_output_in: in std_logic_vector(15 downto 0);
+            D2_output_in: in std_logic_vector(15 downto 0); 
+            enc_addr_in : in std_logic_vector(2 downto 0); -- output from custom encoder
+            PC2_in : in std_logic_vector(15 downto 0);
+            MA_st_in : in std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
+            WB_st_in : in std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+				EX_c, EX_z: in std_logic;
+            RF_WR_in: in std_logic;
+            ---------------------------------outputs
+            opcode_out: out std_logic_vector(5 downto 0);
+            instr_11_9_out : out std_logic_vector(2 downto 0);
+            E9_output_out: out std_logic_vector(15 downto 0);
+            ALU_output_out: out std_logic_vector(15 downto 0);
+            D2_output_out: out std_logic_vector(15 downto 0); 
+            enc_addr_out : out std_logic_vector(2 downto 0); -- output from custom encoder
+            PC2_out : out std_logic_vector(15 downto 0);
+            MA_st_out : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
+            WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
+				MA_c, MA_z: out std_logic;
+            RF_WR_out: out std_logic
 		);
 	end component EX2MAreg;
 
@@ -539,15 +541,15 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity extender_nine is
-	port (input1: in std_logic_vector(8 downto 0);
-			output1: out std_logic_vector(15 downto 0));
+	port (input: in std_logic_vector(8 downto 0);
+			output: out std_logic_vector(15 downto 0));
 end entity extender_nine;
 
 architecture major_extending of extender_nine is
 begin
 	--new_process: process(input)
 	--begin
-	output1 <= "0000000" & input1;
+	output <= "0000000" & input;
 	--end process;
 end major_extending;
 
@@ -1241,7 +1243,7 @@ use ieee.numeric_std.all;
 entity Memory_Data is 
 		port(
 				clk, m_wr, m_rd: in std_logic; 
-				mem_addr, mem_addr_edit, mem_in: in std_logic_vector(15 downto 0);
+				mem_addr, mem_in: in std_logic_vector(15 downto 0);
 				mem_out: out std_logic_vector(15 downto 0)
 			 ); 
 end entity; 
@@ -1259,7 +1261,7 @@ begin
 		end if;
     if falling_edge(clk) then
       if m_wr = '1' then
-        memorykagyaan(to_integer(unsigned(mem_addr_edit))) <= mem_in;  -- Write
+        memorykagyaan(to_integer(unsigned(mem_addr))) <= mem_in;  -- Write
 
       end if;
     end if;
@@ -1541,7 +1543,7 @@ entity prog_reg is
 			D3: in std_logic_vector(15 downto 0);
 			PC_in: in std_logic_vector(15 downto 0);
 			PC_out: out std_logic_vector(15 downto 0);
-			PC_wr: in std_logic;
+			PC_enable: in std_logic;
 			clk: in std_logic;
 			w_enable: in std_logic;
 			reset: in std_logic);
@@ -1579,7 +1581,7 @@ begin
 	e7 <= w_enable and (A3(2)) and (A3(1)) and (A3(0));
 
 	PC_input_MUX: component mux_2_1
-		port map(D3, PC_in, PC_WR, PC_actual_input);
+		port map(D3, PC_in, PC_enable, PC_actual_input);
 	
 	reset_MUX: component mux_2_1
 		port map(PC_actual_input, "0000000000000000", reset, PC_real_input); -- real >> actual
@@ -1587,7 +1589,7 @@ begin
 --	e_PC_MUX: component mux_2_1
 --		port map(e0, PC_WR, PC_WR, e_actual_PC);
 	
-	e_actual_PC <= (e0) or (PC_WR);
+	e_actual_PC <= (e0) or (PC_enable);
 	
 	-- Initialise the registers
 	reg0: T_reg port map (input => PC_real_input, w_enable => (e_actual_PC or reset), clk => clk, output => r0);
@@ -1623,7 +1625,7 @@ begin
 	writePC: process(clk) is
 	begin
 		if(falling_edge(clk)) then
-			if(PC_WR = '1' and (not A3 = "000")) then 
+			if(PC_enable = '1' and (not A3 = "000")) then 
 				r0 <= PC_in;
 			end if;
 		end if;
@@ -1638,18 +1640,18 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity signed_extender is
-	port (input1: in std_logic_vector(5 downto 0);
-			output1: out std_logic_vector(15 downto 0));
+	port (input: in std_logic_vector(5 downto 0);
+			output: out std_logic_vector(15 downto 0));
 end entity signed_extender;
 
 architecture ext of signed_extender is
 begin
-	conv_process: process(input1)
+	conv_process: process(input)
 	begin
-		if (input1(5) = '0') then
-			output1 <= "0000000000" & input1;
+		if (input(5) = '0') then
+			output <= "0000000000" & input;
 		else 
-			output1 <= "1111111111" & input1;
+			output <= "1111111111" & input;
 		end if;
 	end process;
 end ext;
@@ -1664,7 +1666,7 @@ use ieee.numeric_std.all;
 entity EX2MAreg is
 	port (
 			---------------------------------inputs
-			clk, EX2MA_WR: in std_logic;
+				clk, EX2MA_WR: in std_logic;
             reset_wr: in std_logic;
             opcode_in: in std_logic_vector(5 downto 0);
             instr_11_9_in : in std_logic_vector(2 downto 0);
@@ -1675,7 +1677,7 @@ entity EX2MAreg is
             PC2_in : in std_logic_vector(15 downto 0);
             MA_st_in : in std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
             WB_st_in : in std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
-			EX_c, EX_z: in std_logic;
+				EX_c, EX_z: in std_logic;
             RF_WR_in: in std_logic;
             ---------------------------------outputs
             opcode_out: out std_logic_vector(5 downto 0);
@@ -1687,7 +1689,7 @@ entity EX2MAreg is
             PC2_out : out std_logic_vector(15 downto 0);
             MA_st_out : out std_logic_vector(3 downto 0); -- MA2WB_WR, DATA_MEM_WR, DATA_MEM_RD, MUX_MEM_OUT 
             WB_st_out : out std_logic_vector(1 downto 0); -- WB_MUX_1, WB_MUX_0
-			MA_c, MA_z: out std_logic;
+				MA_c, MA_z: out std_logic;
             RF_WR_out: out std_logic
     );
 end entity EX2MAreg;
@@ -1817,7 +1819,7 @@ begin
     instr_11_9_out <= instr_11_9_s;
     instr_8_6_out <= instr_8_6_s;
     instr_5_3_out <= instr_5_3_s;
-	instr_2_0_out <= instr_2_0_s;
+	 instr_2_0_out <= instr_2_0_s;
     instr_5_0_out <= instr_5_0_s;
     instr_8_0_out <= instr_8_0_s;
     enc_addr_out <= enc_addr_s;
@@ -1839,7 +1841,7 @@ begin
             instr_11_9_s <= instr_11_9_in;
             instr_8_6_s <= instr_8_6_in;
             instr_5_3_s <= instr_5_3_in;
-			instr_2_0_s <= instr_2_0_in;
+				instr_2_0_s <= instr_2_0_in;
             instr_5_0_s <= instr_5_0_in;
             instr_8_0_s <= instr_8_0_in;
             enc_addr_s <= enc_addr_in;
