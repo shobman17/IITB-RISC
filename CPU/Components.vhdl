@@ -667,7 +667,7 @@ architecture blackboxed2 of bbD2 is
 	--signal c, z: std_logic := '0';
 	--signal storage: std_logic_vector(1 downto 0):="00";
 	begin
-		edit_process: process(mux_rf_a1_output, or2ex_a3, ex2ma_a3, ma2wb_a3, or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr,id2or_mux_alu_b)
+		edit_process: process(mux_rf_a1_output, or2ex_a3, ex2ma_a3, ma2wb_a3, or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr,id2or_mux_alu_b, alpha)
 		begin
 			if ((mux_rf_a1_output = or2ex_a3 and or2ex_rf_wr = '1' and alpha ='1') or (alpha = '0'and id2or_mux_alu_b = '0')) then
 			   mux_rf_d2_1<='0';
@@ -706,7 +706,7 @@ end entity bb_cwr_zwr;
 
 architecture blackboxed3 of bb_cwr_zwr is
 	begin
-		edit_process: process(ex2ma_c, ex2ma_z, opcode)
+		edit_process: process(ex2ma_c, ex2ma_z, opcode, EX_RF_WR)
 		begin
 			if (EX_RF_WR ='0') then
 				c_wr <= '0';
@@ -1169,7 +1169,7 @@ end entity mux_4_1_1;
 
 architecture Structer4 of mux_4_1_1 is
 begin
-   selectproc4: process(S0,S1) is 
+   selectproc4: process(S0,S1, I0, I1, I2, I3) is 
 	begin 
 	if (S0 = '0' and S1 = '0') then 
 		mux_out <= I0;
@@ -1307,6 +1307,7 @@ end entity IF2IDreg;
 
 architecture bhv1 of IF2IDreg is
 	signal IMdatas, pcs,pc2s: std_logic_vector(15 downto 0) := "0000000000000000";
+	signal IMdatap, pcp, pc2p: std_logic_vector(15 downto 0) :="0000000000000000";
 	--signal storage: std_logic_vector(1 downto 0):="00";
 	begin
 		IMdatao <= IMdatas;
@@ -1318,14 +1319,18 @@ architecture bhv1 of IF2IDreg is
 		begin
 			if(falling_edge(clk)) then
 				if (IF2ID_WR = '1')then
-					IMdatas <= IMdata;
-					pcs <= pc;
-					pc2s <= pc2; 
-				else 
-					IMdatas <= IMdatas;
-					pcs<=pcs;
-					pc2s<=pc2s;
+					IMdatas <= IMdatap;
+					pcs <= pcp;
+					pc2s <= pc2p; 
+--				else 
+--					IMdatas <= IMdatas;
+--					pcs<=pcs;
+--					pc2s<=pc2s;
 				end if;
+			elsif(rising_edge(clk)) then
+					IMdatap <= IMdata;
+					pcp <= pc;
+					pc2p <= pc2; 
 			else 
 				IMdatas <= IMdatas;
 				pcs<=pcs;
@@ -1890,7 +1895,7 @@ begin
     WB_st_out <= WB_st_s;
     RF_WR_out <= RF_WR_s;
     OR_alpha <= alpha_s;
-    edit_process: process(clk, ID2OR_WR, reset_wr) is
+    edit_process: process(clk, ID2OR_WR, reset_wr, reset_wr_s) is
     begin
         if(rising_edge(clk) and ID2OR_WR = '1') then
             opcode_p <= opcode_in;
@@ -2132,7 +2137,7 @@ begin
     RF_WR_out <= RF_WR_s;
     --EX_c<= c_s;
     --EX_z <= z_s;
-    edit_process: process(clk, OR2EX_WR, reset_wr) is
+    edit_process: process(clk, OR2EX_WR, reset_wr, reset_wr_s) is
     begin
         if(falling_edge(clk) and OR2EX_WR = '1') then
             opcode_s <= opcode_p;

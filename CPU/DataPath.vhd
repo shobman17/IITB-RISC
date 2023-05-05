@@ -120,12 +120,12 @@ architecture trivial of DataPath is
 	signal updated_imm, subtractor_out, subtractor_in: std_logic_vector(7 downto 0);
 	signal alu_ain, alu_bin, adder2_ain, adder2_bin : std_logic_vector(15 downto 0);
 	signal RF_writeback, EX_ALU_out, MA_ALU_out : std_logic_vector(15 downto 0);
-	signal c_o, c_wr, z_wr, EX_z, z_o, alu_carry, EX_c,mux_rf_d2_1, mux_rf_d2_0, mux_rf_d1_1, mux_rf_d1_0 : std_logic;
+	signal c_o, c_wr, z_wr, EX_z, z_o, alu_carry, EX_c,mux_rf_d2_1, mux_rf_d2_0, mux_rf_d1_1, mux_rf_d1_0, bb_PC_wr_suggestion : std_logic:='1';
 	signal D1, D2, OR_D1_MUX_OUT, OR_D2_MUX_OUT : std_logic_vector(15 downto 0);
 	signal out_IF, out_EXE: std_logic_vector(15 downto 0);
-	signal branch, bb_PC_wr_suggestion, bb_reset_wr, lol_ignore_this_signal, OR_RF_WR: std_logic;
+	signal branch, bb_reset_wr, lol_ignore_this_signal, OR_RF_WR: std_logic:='0';
 
-	signal IF2ID_WR, all_zeros, EX_RF_WR, MA_RF_WR, ID_RF_WR: std_logic;
+	signal IF2ID_WR, all_zeros, EX_RF_WR, MA_RF_WR, ID_RF_WR: std_logic:='0';
 
 	signal ID_IM_out, ID_IM_in, OR_IM_in, ID_adder1_out: std_logic_vector(15 downto 0):=(others=>'0');	
 	signal if2id_wr_and_a, singular_one, alpha_update, n_alpha_update, ID_alpha, if_LMSM: std_logic;
