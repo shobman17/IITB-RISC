@@ -1,10 +1,10 @@
-Analysis & Synthesis Status : Successful - Fri May 05 01:10:57 2023
+Analysis & Synthesis Status : Successful - Sat May 06 14:16:45 2023
 Quartus Prime Version : 20.1.1 Build 720 11/11/2020 SJ Lite Edition
 Revision Name : branch_predictor
 Top-level Entity Name : branch_predictor
 Family : MAX 10
-Total logic elements : 5,296
-    Total combinational functions : 5,296
+Total logic elements : 92
+    Total combinational functions : 92
     Dedicated logic registers : 0
 Total registers : 0
 Total pins : 105

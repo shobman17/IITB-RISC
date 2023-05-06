@@ -140,15 +140,11 @@
 					"strict" : false
 				},
 				{
-					"name" : "in_IF[0]",
-					"strict" : false
-				},
-				{
 					"name" : "in_IF[1]",
 					"strict" : false
 				},
 				{
-					"name" : "in_IF[2]",
+					"name" : "in_IF[0]",
 					"strict" : false
 				},
 				{
@@ -156,7 +152,7 @@
 					"strict" : false
 				},
 				{
-					"name" : "in_IF[4]",
+					"name" : "in_IF[2]",
 					"strict" : false
 				},
 				{
@@ -164,7 +160,7 @@
 					"strict" : false
 				},
 				{
-					"name" : "in_IF[6]",
+					"name" : "in_IF[4]",
 					"strict" : false
 				},
 				{
@@ -172,7 +168,7 @@
 					"strict" : false
 				},
 				{
-					"name" : "in_IF[8]",
+					"name" : "in_IF[6]",
 					"strict" : false
 				},
 				{
@@ -180,7 +176,7 @@
 					"strict" : false
 				},
 				{
-					"name" : "in_IF[10]",
+					"name" : "in_IF[8]",
 					"strict" : false
 				},
 				{
@@ -188,7 +184,7 @@
 					"strict" : false
 				},
 				{
-					"name" : "in_IF[12]",
+					"name" : "in_IF[10]",
 					"strict" : false
 				},
 				{
@@ -196,11 +192,23 @@
 					"strict" : false
 				},
 				{
-					"name" : "in_IF[14]",
+					"name" : "in_IF[12]",
 					"strict" : false
 				},
 				{
 					"name" : "in_IF[15]",
+					"strict" : false
+				},
+				{
+					"name" : "in_IF[14]",
+					"strict" : false
+				},
+				{
+					"name" : "in_EXE2[0]",
+					"strict" : false
+				},
+				{
+					"name" : "in_pred[0]",
 					"strict" : false
 				},
 				{
@@ -217,18 +225,6 @@
 				},
 				{
 					"name" : "opcode_EXE[4]",
-					"strict" : false
-				},
-				{
-					"name" : "in_pred[0]",
-					"strict" : false
-				},
-				{
-					"name" : "hb_in",
-					"strict" : false
-				},
-				{
-					"name" : "in_EXE2[0]",
 					"strict" : false
 				},
 				{
@@ -293,6 +289,10 @@
 				},
 				{
 					"name" : "in_EXE[14]",
+					"strict" : false
+				},
+				{
+					"name" : "hb_in",
 					"strict" : false
 				},
 				{

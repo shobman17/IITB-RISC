@@ -92,7 +92,7 @@ package Components is
 	component branch_predictor is 
 	generic (
 		addrSize    : integer   := 16;
-		tableSize   : integer   := 64);
+		tableSize   : integer   := 4);
 	port(
 		in_IF, in_EXE, in_pred, in_EXE2: in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
 		opcode_EXE: in std_logic_vector(5 downto 0);
@@ -1352,7 +1352,7 @@ use ieee.numeric_std.all;
 entity branch_predictor is 
 	generic (
 		addrSize    : integer   := 16;
-		tableSize   : integer   := 64);
+		tableSize   : integer   := 4);
 	port(
 		in_IF, in_EXE, in_pred, in_EXE2: in std_logic_vector(15 downto 0); --in_IF is for reading prediction. in_EXE and in_pred are for writing a prediction
 		opcode_EXE: in std_logic_vector(5 downto 0);
