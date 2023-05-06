@@ -181,7 +181,7 @@ package Components is
 	component Memory_Data is 
 			port(
 					clk, m_wr, m_rd: in std_logic; 
-					mem_addr, mem_in: in std_logic_vector(15 downto 0);
+					mem_addr, mem_in, input_datapath: in std_logic_vector(15 downto 0);
 					mem_out, output_datapath: out std_logic_vector(15 downto 0)
 				); 
 	end component; 
@@ -526,10 +526,10 @@ architecture bhv of T_reg is
 		output(15 downto 0)<= storage(15 downto 0);
 		edit_process: process(clk)
 		begin
-			if(clk='1' and clk'event and w_enable='1') then
+			if(falling_edge(clk)) then
 				storage(15 downto 0)<=input_storage(15 downto 0);
 			end if;
-			if(rising_edge(clk)) then
+			if(rising_edge(clk) and w_enable='1') then
 				input_storage(15 downto 0)<=input(15 downto 0);
 			end if;
 		end process;
@@ -669,7 +669,7 @@ architecture blackboxed2 of bbD2 is
 	begin
 		edit_process: process(mux_rf_a1_output, or2ex_a3, ex2ma_a3, ma2wb_a3, or2ex_rf_wr, ex2ma_rf_wr, ma2wb_rf_wr,id2or_mux_alu_b, alpha)
 		begin
-			if ((mux_rf_a1_output = or2ex_a3 and or2ex_rf_wr = '1' and alpha ='1') or (alpha = '0'and id2or_mux_alu_b = '0')) then
+			if ((mux_rf_a1_output = or2ex_a3 and or2ex_rf_wr = '1' and alpha ='1') or (alpha = '0' and id2or_mux_alu_b = '0')) then
 			   mux_rf_d2_1<='0';
 				mux_rf_d2_0<='1';
 			elsif (mux_rf_a1_output = ex2ma_a3 and ex2ma_rf_wr ='1'and alpha = '1' and id2or_mux_alu_b = '0') then
@@ -708,40 +708,41 @@ architecture blackboxed3 of bb_cwr_zwr is
 	begin
 		edit_process: process(ex2ma_c, ex2ma_z, opcode, EX_RF_WR)
 		begin
-			if (EX_RF_WR ='0') then
-				c_wr <= '0';
-				z_wr <= '0';
-				rf_wr_and_a <= '0'; ---- ??????
-			elsif (opcode = "000100" or opcode = "000111" or opcode = "000000" or opcode = "000001" or opcode = "000010" or opcode = "000011") then
+--			if (EX_RF_WR ='0') then
+--				c_wr <= '0';
+--				z_wr <= '0';
+--				rf_wr_and_a <= '0'; ---- ??????
+--			els
+			if (opcode = "000100" or opcode = "000111" or opcode(5 downto 2) = "0000") then
 				c_wr<= '1';
 				z_wr<= '1';
-				rf_wr_and_a<=EX_RF_WR and '1';
+				rf_wr_and_a<='1';
 			elsif (opcode = "000110" and ex2ma_c ='1') then 
 				c_wr<= '1';
-				rf_wr_and_a<='1' and EX_RF_WR;
+				rf_wr_and_a<='1' ;
 				z_wr<= '1';
 			elsif (opcode = "000101" and ex2ma_z ='1') then 
 				c_wr<= '1';
-				rf_wr_and_a<='1' and EX_RF_WR;
+				rf_wr_and_a<='1';
 				z_wr<= '1';
 			elsif (opcode = "001000" or opcode = "001011" ) then 
 				c_wr<= '0';
-				rf_wr_and_a<='1' and EX_RF_WR;
+				rf_wr_and_a<='1';
 				z_wr<= '1';
 			elsif (opcode = "001010" and ex2ma_c ='1') then 
 				c_wr<= '0';
-				rf_wr_and_a<='1' and EX_RF_WR;
+				rf_wr_and_a<='1' ;
 				z_wr<= '1';
 			elsif (opcode = "001001" and ex2ma_z ='1') then 
 				c_wr<= '0';
-				rf_wr_and_a<='1' and EX_RF_WR;
+				rf_wr_and_a<='1' ;
 				z_wr<= '1';
 			elsif (opcode = "000110" or opcode = "000101" or opcode = "001010" or opcode = "001001") then
 			   c_wr<= '0';
 				z_wr<= '0';
-				rf_wr_and_a<='0' and EX_RF_WR;
+				rf_wr_and_a<='0' ;
 			else
-				rf_wr_and_a<='1' and EX_RF_WR;
+				rf_wr_and_a<='1' ;
 				c_wr<= '0';
 				z_wr<= '0';
 			end if;
@@ -1073,8 +1074,7 @@ begin
 		
 	with S0 select
 		mux_out <= I0 when '0',
-					  I1 when '1';
-	
+					  I1 when others;
 
 
 --   end if;
@@ -1103,6 +1103,8 @@ begin
 	if (S0 = '0' ) then 
 		mux_out <= I0;
 	elsif (S0 = '1') then 
+		mux_out <= I1;
+	else 
 		mux_out <= I1;
 
 
@@ -1140,12 +1142,12 @@ begin
 --		mux_out <= I2;
 --	elsif (S0 = '1' and S1 = '1') then 
 --		mux_out <= I3;
-	select_bits <= S1 & S0;
+	select_bits <= S0 & S1;
 	with select_bits select
 		mux_out <= I0 when "00",
 					  I1 when "01",
 					  I2 when "10",
-					  I3 when "11";
+					  I3 when others;
 
 --   end if;
 --	end process selectproc4;
@@ -1216,6 +1218,8 @@ begin
 		mux_out <= I3;
 	elsif (S0 = '0' and S1 = '0' and S2 = '1') then 
 		mux_out <= I4;
+	else 
+		mux_out <= "0000000000000000";
    end if;
 	end process selectproc5;
 end Structer5;
@@ -1238,8 +1242,8 @@ entity Memory_Code is
 end entity; 
 
 architecture memorykakaam of Memory_Code is 
-		type mem_vec is array(65535 downto 0) of std_logic_vector(15 downto 0);
-		signal memorykagyaan : mem_vec := (others => "0000000000000000");  
+		type mem_vec is array(255 downto 0) of std_logic_vector(15 downto 0);
+		signal memorykagyaan : mem_vec:= (0=> "0000001010011111", 2=>"0000010010010000", 4=>"0000011011001000", 6=>"0100100011010000", 8=>"0001111001010000", others => "0000000000000000");  
 	
 begin
 	
@@ -1261,17 +1265,17 @@ use ieee.numeric_std.all;
 entity Memory_Data is 
 		port(
 				clk, m_wr, m_rd: in std_logic; 
-				mem_addr, mem_in: in std_logic_vector(15 downto 0);
+				mem_addr, mem_in, input_datapath: in std_logic_vector(15 downto 0);
 				mem_out, output_datapath: out std_logic_vector(15 downto 0)
 			 ); 
 end entity; 
 
 architecture memorykakaam of Memory_Data is 
-		type mem_vec is array(65535 downto 0) of std_logic_vector(15 downto 0);
-		signal memorykagyaan : mem_vec := (others => "0000000000000000");  
+		type mem_vec is array(255 downto 0) of std_logic_vector(15 downto 0);
+		signal memorykagyaan : mem_vec:= (24=>"0111110101010101", others => "0000000000000000");  
 	
 begin
-	output_datapath <= memorykagyaan(65281); -- mem(0xFF01) is assigned memory mapped output
+	output_datapath <= memorykagyaan(200); -- mem(0xFF01) is assigned memory mapped output sike
   mem_process : process (clk) is
   begin
 	
@@ -1281,9 +1285,13 @@ begin
 			mem_out <= "0000000000000000";
 	end if;
     if falling_edge(clk) then
-      if m_wr = '1' then
+      if m_wr = '1' and (not mem_addr = "0000000000001000")then
         memorykagyaan(to_integer(unsigned(mem_addr))) <= mem_in;  -- Write
-
+			memorykagyaan(8) <= input_datapath;
+		elsif m_wr ='1' then
+			memorykagyaan(to_integer(unsigned(mem_addr))) <= mem_in;  -- Write
+		else
+			memorykagyaan(8) <= input_datapath;  -- Write
       end if;
     end if;
   end  process;
@@ -1377,7 +1385,7 @@ begin
 
 	IF_proc: process(in_IF, in_EXE, in_EXE2, hb_in, in_pred, opcode_EXE) is
 		variable found: std_logic := '0';
---		variable index: integer := 0;
+		variable hb_copy: std_logic := '0';
 	begin
 
 --		searchLUTIF: for i in tableSize-1 downto 0 loop
@@ -1398,8 +1406,9 @@ begin
 --			end if;
 --		end loop searchLUTIF;
 		
+		hb_copy := historyBit;
 		if(inputTable = in_IF) then
-			if(historyBit = '1') then
+			if(hb_copy = '1') then
 				branch <= '1';
 				out_IF <= predTable;
 			else
@@ -1497,7 +1506,7 @@ begin
 			out_EXE <= "0000000000000000";
 --			inputTable := inputTable;
 --			predTable := predTable;
---			historyBit := historyBit;
+			historyBit := hb_copy;
 		end if;
 	end process IF_proc;
 			
@@ -1645,14 +1654,14 @@ architecture pr of prog_reg is
 	end component mux_2_1;
 		
 	-- These signals dictate which registers are allowed to be written
-	signal e0, e1, e2, e3, e4, e5, e6,  e7, e_actual_PC, PC_enabler: std_logic;
+	signal e0, e1, e2, e3, e4, e5, e6,  e7, e_actual_PC, PC_enabler: std_logic:='0';
 	-- These signals carry the output from each register
-	signal r0, r1, r2, r3, r4, r5, r6, r7, PC_actual_input, PC_real_input, r0_ideal: std_logic_vector(15 downto 0);
+	signal r0, r1, r2, r3, r4, r5, r6, r7, PC_actual_input, PC_real_input, r0_ideal: std_logic_vector(15 downto 0):="0000000000000000";
 begin
 
 	-- Assign signals to control write enable for individual registers
 	e0 <= w_enable and not(A3(2)) and not(A3(1)) and not(A3(0));
-	e1 <= w_enable and not(A3(2)) and not(A3(1)) and (A3(0));
+	e1 <= w_enable and (not(A3(2))) and (not(A3(1))) and ((A3(0)));
 	e2 <= w_enable and not(A3(2)) and (A3(1)) and not(A3(0));
 	e3 <= w_enable and not(A3(2)) and (A3(1)) and (A3(0));
 	e4 <= w_enable and (A3(2)) and not(A3(1)) and not(A3(0));
@@ -1690,7 +1699,7 @@ begin
 				r4 when "100",
 				r5 when "101",
 				r6 when "110",
-				r7 when "111";
+				r7 when others;
 	
 	with A2 select
 		D2 <= r0 when "000",
@@ -1700,13 +1709,13 @@ begin
 				r4 when "100",
 				r5 when "101",
 				r6 when "110",
-				r7 when "111";
+				r7 when others;
 				
 	PC_out <= r0;
 	writePC: process(clk) is
 	begin
 		if(falling_edge(clk)) then
-			if(PC_enable = '1' and (not A3 = "000")) then 
+			if(PC_enable = '1') then 
 				r0 <= PC_in;
 			else
 				r0 <= r0_ideal;

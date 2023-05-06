@@ -8,6 +8,7 @@ use work.Gates.all;
 
 entity DataPath is
 	port(clk, reset: in std_logic;
+		input_datapath: in std_logic_vector(15 downto 0);
 		output_datapath: out std_logic_vector(15 downto 0));
 end entity Datapath;
 
@@ -235,7 +236,7 @@ architecture trivial of DataPath is
 			port map(OR_5_0, OR_SE6out);
 			
 		DataMemory: component Memory_Data	
-			port map(clk, MA_controls(1), MA_controls(2), MA_ALU_out, Mem_D3_in, Mem_D1, output_datapath);
+			port map(clk, MA_controls(1), MA_controls(2), MA_ALU_out, Mem_D3_in, input_datapath, Mem_D1, output_datapath);
 		
 		mux_alu_a: component mux_4_1
 			port map(EX_D1_MUX_out, "0000000000000000", "0000000000000010", "0000000000000010", EX_controls(8), EX_controls(9), alu_ain);

@@ -5,15 +5,19 @@ entity CPU_tb is
 end entity CPU_tb;
 
 architecture bhv of CPU_tb is
-	component Datapath is
-		port (clk, reset: in std_logic);
-	end component Datapath;
+	component CPU is
+		port (clk, reset: in std_logic;
+		input_datapath: in std_logic_vector(15 downto 0);
+		output_datapath: out std_logic_vector(15 downto 0));
+	end component CPU;
 
-signal clk: std_logic := '1';
+signal clk: std_logic := '0';
 signal reset : std_logic := '0';
 constant clk_period : time := 20 ns;
+signal input, output: std_logic_vector(15 downto 0):= "0000000000000000";
 begin
-	dut_instance: Datapath port map(clk, reset);
+	dut_instance: CPU port map(clk, reset, input, output);
 	clk <= not clk after clk_period/2 ;
 	reset <= '0';
+	input <="0000000000000000";
 end bhv;

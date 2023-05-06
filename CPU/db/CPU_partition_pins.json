@@ -1,0 +1,145 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "output_datapath[0]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[1]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[2]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[3]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[4]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[5]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[6]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[7]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[8]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[9]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[10]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[11]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[12]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[13]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[14]",
+					"strict" : false
+				},
+				{
+					"name" : "output_datapath[15]",
+					"strict" : false
+				},
+				{
+					"name" : "clk",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[0]",
+					"strict" : false
+				},
+				{
+					"name" : "reset",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[4]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[3]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[2]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[1]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[5]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[6]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[7]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[8]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[9]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[10]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[11]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[12]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[13]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[14]",
+					"strict" : false
+				},
+				{
+					"name" : "input_datapath[15]",
+					"strict" : false
+				}
+			]
+		}
+	]
+}
